@@ -1,0 +1,131 @@
+---
+title: "Econometrics Forecasting – GDP Analysis"
+author: "Pratiksha Madnurkar"
+date: "2026-05-18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Executive Summary
+
+This project analyzes quarterly GDP growth for Italy and Germany using econometric and time-series forecasting techniques.
+
+The analysis includes:
+- Eurostat data extraction
+- GDP trend analysis
+- ARIMA forecasting
+- Regression analysis
+
+# Business Objective
+
+The purpose of this project is to evaluate macroeconomic trends and forecast future GDP growth.
+
+Key business questions:
+- How have Italy and Germany performed economically over time?
+- Can future GDP growth be forecasted accurately?
+- Does German GDP growth influence Italian GDP growth?
+
+
+```{r}
+library(eurostat)
+library(tidyverse)
+library(forecast)
+
+search_eurostat("GDP") |> select(title, code) |> head(10)
+gdp_raw <- get_eurostat("namq_10_gdp",
+                        filters = list(
+                          geo    = c("IT", "DE"),
+                          na_item = "B1GQ",   # GDP
+                          unit   = "CLV_PCH_PRE"  # % change previous quarter
+                        )
+)
+
+```
+
+# Data Cleaning
+
+```{r}
+gdp <- gdp_raw |>
+  filter(time >= "2010-01-01") |>
+  select(time, geo, values) |>
+  drop_na()
+
+glimpse(gdp)
+```
+
+# GDP Trend Analysis
+
+```{r}
+ggplot(gdp, aes(x=time, y=values, color=geo)) +
+  geom_line(size=1) +
+  geom_hline(yintercept=0, linetype="dashed", color="grey50") +
+  scale_color_manual(values=c("IT"="#534AB7", "DE"="#185FA5"),
+                     labels=c("IT"="Italy", "DE"="Germany")) +
+  labs(title="Italy vs Germany: Quarterly GDP Growth (%)",
+       subtitle="Source: Eurostat, 2010–2024",
+       x=NULL, y="% change vs previous quarter",
+       color="Country") +
+  theme_minimal() +
+  theme(legend.position="top")
+```
+
+# ARIMA Forecasting
+
+```{r}
+italy_gdp <- gdp |> filter(geo == "IT") |> pull(values)
+ts_italy  <- ts(italy_gdp, frequency=4, start=c(2010,1))
+
+arima_model <- auto.arima(ts_italy, seasonal=TRUE)
+summary(arima_model)
+```
+
+# GDP Forecast
+
+```{r}
+fcast <- forecast(arima_model, h=8, level=c(80, 95))
+
+autoplot(fcast) +
+  labs(title="Italy GDP Growth Forecast — 8 Quarters",
+       subtitle="ARIMA model with 80% and 95% confidence intervals",
+       x=NULL, y="% growth") +
+  theme_minimal()
+```
+
+# Regression Analysis
+
+```{r}
+gdp_wide <- gdp |>
+  pivot_wider(names_from=geo, values_from=values) |>
+  drop_na()
+
+model <- lm(IT ~ DE, data=gdp_wide)
+summary(model)
+
+ggplot(gdp_wide, aes(x=DE, y=IT)) +
+  geom_point(color="#534AB7", alpha=0.6) +
+  geom_smooth(method="lm", color="#1D9E75", se=TRUE) +
+  labs(title="Does Germany's GDP growth predict Italy's?",
+       x="Germany GDP growth (%)", y="Italy GDP growth (%)") +
+  theme_minimal()
+```
+
+
+# Key Insights
+
+- GDP growth exhibited strong volatility during economic shocks.
+- ARIMA models captured cyclical macroeconomic behavior effectively.
+- German GDP growth demonstrated moderate predictive influence on Italian GDP growth.
+
+# Conclusion
+
+This project demonstrates practical econometric and forecasting skills.
+
+Key competencies demonstrated:
+- Time-series forecasting
+- ARIMA modeling
+- Regression analysis
+- Macroeconomic analysis
+- Data visualization

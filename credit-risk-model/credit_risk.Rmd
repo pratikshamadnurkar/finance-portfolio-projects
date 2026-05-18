@@ -1,0 +1,133 @@
+---
+title: "Credit Risk Modeling – German Credit Dataset"
+author: "Pratiksha Madnurkar"
+date: "2026-05-18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Executive Summary
+
+This project develops a credit risk prediction model using logistic regression in R.
+
+The analysis uses the German Credit dataset to predict the probability of borrower default.
+
+The project includes:
+- Credit risk exploration
+- Default rate analysis
+- Logistic regression modeling
+- Model evaluation
+- ROC curve analysis
+
+# Business Objective
+
+The purpose of this project is to identify factors influencing borrower default risk.
+
+Key business questions:
+- Which borrower characteristics increase default probability?
+- How accurately can default risk be predicted?
+- How effective is logistic regression for credit scoring?
+
+```{r}
+library(tidyverse)
+library(ROCR)
+
+data("GermanCredit", package="caret")
+
+library(caret)
+glimpse(GermanCredit)
+table(GermanCredit$Class)
+```
+
+The dataset contains:
+- 1000 loan applicants
+- 62 borrower characteristics
+- Binary classification:
+  - Good credit
+  - Bad credit
+
+# Default Rate Analysis
+
+```{r}
+GermanCredit |>
+  mutate(default = ifelse(Class == "Bad", 1, 0)) |>
+  group_by(duration_group = cut(Duration,
+                                breaks = c(0,12,24,36,72))) |>
+  summarise(default_rate = mean(default) * 100) |>
+  ggplot(aes(x = duration_group, y = default_rate)) +
+  geom_col(fill = "#534AB7") +
+  labs(title = "Default rate by loan duration",
+       x = "Duration (months)",
+       y = "Default rate (%)") +
+  theme_minimal()
+
+```
+
+# Train-Test Split
+
+```{r}
+set.seed(42)
+n     <- nrow(GermanCredit)
+train_idx <- sample(1:n, round(0.8*n))
+
+train <- GermanCredit[train_idx, ]
+test  <- GermanCredit[-train_idx, ]
+
+```
+
+# Logistic Regression Model
+
+```{r}
+model <- glm(Class ~ Duration + Amount + Age + 
+               InstallmentRatePercentage + NumberExistingCredits,
+             data=train, family="binomial")
+
+summary(model)
+```
+
+# Model Prediction & Accuracy
+
+```{r}
+pred_prob <- predict(model, newdata=test, type="response")
+pred_class <- ifelse(pred_prob > 0.5, "Bad", "Good")
+
+# Accuracy
+accuracy <- mean(pred_class == test$Class)
+cat("Model accuracy:", round(accuracy*100, 1), "%\n")
+```
+
+# ROC Curve Analysis
+
+```{r}
+
+pred_obj <- prediction(pred_prob, test$Class, 
+                       label.ordering=c("Good","Bad"))
+perf     <- performance(pred_obj, "tpr", "fpr")
+auc      <- performance(pred_obj, "auc")@y.values[[1]]
+
+plot(perf, colorize=FALSE, col="#534AB7", lwd=2,
+     main=paste0("ROC Curve — AUC = ", round(auc,3)))
+abline(a=0, b=1, lty=2, col="grey50")
+```
+
+
+# Key Insights
+
+- Longer loan duration increases default probability.
+- Logistic regression achieved strong predictive performance.
+- The model demonstrates practical applications in credit scoring and banking analytics.
+
+# Conclusion
+
+This project demonstrates practical risk analytics and predictive modeling skills.
+
+Key competencies demonstrated:
+- Credit risk modeling
+- Logistic regression
+- Classification analysis
+- ROC/AUC evaluation
+- Financial risk analytics
