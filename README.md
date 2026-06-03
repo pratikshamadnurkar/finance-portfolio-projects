@@ -7,17 +7,72 @@ I am an MSc Economics & Finance student with 2+ years of experience in financial
 This repository showcases finance, analytics, and financial modelling projects developed using Excel, Power BI, R, Python, and SQL.
 
 ---
-
 ## Featured Projects
 
-| Project | Focus Area | Tools |
-|----------|----------|----------|
-| FP&A Dashboard – Ferrari Financial Performance | KPI Reporting & Performance Analysis | R, Shiny, Plotly |
-| DCF Valuation Model | Financial Modelling & Valuation | Excel |
-| Credit Risk Prediction Model | Risk Analytics | R |
-| GDP Forecasting Model | Econometrics & Forecasting | R, ARIMA |
-| Portfolio Optimization | Asset Management | R |
+### 📊 FP&A Dashboard – Ferrari Financial Performance
 
+**Objective:** Build an interactive dashboard for financial performance monitoring and KPI reporting.
+
+**Tools:** R, Shiny, Plotly
+
+**Key Features**
+- Revenue analysis
+- Margin tracking
+- Capital structure monitoring
+- Interactive drill-down reporting
+
+---
+
+### 💰 DCF Valuation Model
+
+**Objective:** Estimate enterprise value under multiple business scenarios.
+
+**Tools:** Excel
+
+**Key Features**
+- Discounted Cash Flow (DCF)
+- Sensitivity Analysis
+- Scenario Analysis
+- Enterprise Valuation
+
+---
+
+### ⚠️ Credit Risk Prediction Model
+
+**Objective:** Predict probability of default using financial indicators.
+
+**Tools:** R, Logistic Regression
+
+**Key Features**
+- Credit risk classification
+- ROC-AUC evaluation
+- Model performance assessment
+
+---
+
+### 📈 GDP Forecasting Model
+
+**Objective:** Forecast macroeconomic trends using time-series methods.
+
+**Tools:** R, ARIMA
+
+**Key Features**
+- Economic forecasting
+- Trend analysis
+- Time-series modelling
+
+---
+
+### 📉 Portfolio Optimization
+
+**Objective:** Optimize asset allocation using Modern Portfolio Theory.
+
+**Tools:** R
+
+**Key Features**
+- Efficient Frontier
+- Risk-return optimization
+- Portfolio allocation
 ---
 
 ## Technical Skills
@@ -37,13 +92,6 @@ This repository showcases finance, analytics, and financial modelling projects d
 - SQL
 - R
 - Python
-
----
-
-## Education
-
-MSc Economics & Finance  
-Rhine-Waal University of Applied Sciences, Germany
 
 ---
 
