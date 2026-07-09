@@ -2,7 +2,7 @@
 
 Hi, I'm Pratiksha Madnurkar.
 
-I am an MSc Economics & Finance student with 2+ years of experience in financial reporting, forecasting, variance analysis, and process automation.
+I am an MSc Economics & Finance graduate with 2+ years of experience in financial reporting, forecasting, variance analysis, and process automation.
 
 This repository showcases finance, analytics, and financial modelling projects developed using Excel, Power BI, R, Python, and SQL.
 
