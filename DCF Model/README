@@ -1,0 +1,155 @@
+# DCF Valuation Model
+
+## Overview
+
+This project demonstrates the application of Discounted Cash Flow (DCF) valuation to estimate the intrinsic value of a company. The model incorporates financial forecasting, sensitivity analysis, and scenario planning to evaluate how changes in key assumptions influence enterprise value.
+
+The model mirrors the type of valuation analysis commonly performed by Corporate Finance, FP&A, Investment Banking, and Private Equity professionals when assessing investment opportunities or strategic decisions.
+
+---
+
+## Business Problem
+
+Investment decisions should be based on a company's intrinsic value rather than its market price alone.
+
+Financial analysts use DCF models to estimate future cash generation, assess valuation under different scenarios, and support capital allocation decisions.
+
+Without a structured valuation framework, it becomes difficult to understand whether a business is fairly valued or how changes in business performance affect shareholder value.
+
+---
+
+## Objective
+
+Develop a dynamic financial model capable of:
+
+- Forecasting future financial performance
+- Estimating Enterprise Value and Equity Value
+- Comparing multiple business scenarios
+- Performing sensitivity analysis on key assumptions
+
+---
+
+## Dataset
+
+The model is built using publicly available financial statement information.
+
+Financial inputs include:
+
+- Revenue
+- Operating Expenses
+- EBIT
+- Capital Expenditure
+- Depreciation & Amortization
+- Working Capital
+- Tax Rate
+
+---
+
+## Methodology
+
+### Financial Forecasting
+
+Projected future operating performance using assumptions for:
+
+- Revenue Growth
+- Operating Margin
+- Capital Expenditure
+- Working Capital
+- Tax Rate
+
+### Cash Flow Estimation
+
+Calculated Free Cash Flow to Firm (FCFF) for each forecast period.
+
+### Business Valuation
+
+Estimated:
+
+- Terminal Value
+- Enterprise Value
+- Equity Value
+
+using the Discounted Cash Flow methodology.
+
+### Scenario Analysis
+
+Evaluated valuation under:
+
+- Base Case
+- Bull Case
+- Bear Case
+
+### Sensitivity Analysis
+
+Measured the impact of changes in:
+
+- Weighted Average Cost of Capital (WACC)
+- Terminal Growth Rate
+
+on Enterprise Value.
+
+---
+
+## Results
+
+The model provides a complete valuation framework that enables users to evaluate how operational performance and market assumptions influence business value.
+
+It allows analysts to compare multiple scenarios, identify key valuation drivers, and understand the sensitivity of enterprise value to changes in financial assumptions.
+
+---
+
+## Business Value
+
+This model reflects the valuation process used by Corporate Finance and FP&A teams when supporting:
+
+- Strategic Planning
+- Capital Allocation
+- Investment Appraisal
+- Mergers & Acquisitions
+- Business Valuation
+- Financial Decision-Making
+
+---
+
+## Skills Demonstrated
+
+### Finance
+
+- Financial Modelling
+- Discounted Cash Flow (DCF)
+- Financial Statement Analysis
+- Enterprise Valuation
+- Scenario Analysis
+- Sensitivity Analysis
+- Corporate Finance
+
+### Technical
+
+- Microsoft Excel
+- Financial Modelling
+- Data Analysis
+
+---
+
+## Screenshots
+
+### Model Assumptions
+
+[Insert Screenshot Here]
+
+### DCF Valuation
+
+[Insert Screenshot Here]
+
+### Sensitivity Analysis
+
+[Insert Screenshot Here]
+
+---
+
+## Future Improvements
+
+- Comparable Company Analysis
+- Precedent Transaction Analysis
+- Monte Carlo Simulation
+- Dynamic Dashboard
