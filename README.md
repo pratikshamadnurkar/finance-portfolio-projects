@@ -36,7 +36,6 @@ This repository showcases finance, analytics, and financial modelling projects d
 - Power BI
 - SQL
 - R
-- Python
 
 ---
 
