@@ -52,6 +52,3 @@ Rhine-Waal University of Applied Sciences, Germany
 LinkedIn: www.linkedin.com/in/pratiksha-madnurkar
 
 Email: pratiksha.madnurkar@gmail.com
-LinkedIn: www.linkedin.com/in/pratiksha-madnurkar
-
-Email: pratiksha.madnurkar@gmail.com
