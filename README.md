@@ -13,6 +13,7 @@ This repository showcases finance, analytics, and financial modelling projects d
 | Project | Focus Area | Tools |
 |----------|----------|----------|
 | FP&A Dashboard – Ferrari Financial Performance | KPI Reporting & Performance Analysis | R, Shiny, Plotly |
+| Power BI – Financial Analysis Dashboard | KPI Reporting, Data Modelling & DAX | Power BI, Power Query, DAX |
 | DCF Valuation Model | Financial Modelling & Valuation | Excel |
 | Credit Risk Prediction Model | Risk Analytics | R |
 | GDP Forecasting Model | Econometrics & Forecasting | R, ARIMA |
@@ -41,13 +42,16 @@ This repository showcases finance, analytics, and financial modelling projects d
 
 ## Education
 
-MSc Economics & Finance  
+MSc Economics & Finance
 Rhine-Waal University of Applied Sciences, Germany
 
 ---
 
 ## Connect With Me
 
+LinkedIn: www.linkedin.com/in/pratiksha-madnurkar
+
+Email: pratiksha.madnurkar@gmail.com
 LinkedIn: www.linkedin.com/in/pratiksha-madnurkar
 
 Email: pratiksha.madnurkar@gmail.com
