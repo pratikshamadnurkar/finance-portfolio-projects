@@ -52,20 +52,20 @@ export const COMPANIES = {
 };
 
 export const RATIO_ROWS = [
-  { key: 'revenueGrowth', label: 'Revenue growth', group: 'Growth', category: 'profitability', unit: '%' },
-  { key: 'grossMargin', label: 'Gross margin', group: 'Profitability', category: 'profitability', unit: '%' },
-  { key: 'operatingMargin', label: 'Operating margin', group: 'Profitability', category: 'profitability', unit: '%' },
-  { key: 'netMargin', label: 'Net margin', group: 'Profitability', category: 'profitability', unit: '%' },
-  { key: 'roe', label: 'Return on equity', group: 'Returns', category: 'profitability', unit: '%' },
-  { key: 'roa', label: 'Return on assets', group: 'Returns', category: 'profitability', unit: '%' },
-  { key: 'roce', label: 'Return on capital employed', group: 'Returns', category: 'profitability', unit: '%' },
-  { key: 'currentRatio', label: 'Current ratio', group: 'Liquidity', category: 'liquidity', unit: 'x' },
-  { key: 'debtEquity', label: 'Debt / equity', group: 'Leverage', category: 'leverage', unit: 'x' },
-  { key: 'netDebtEbitda', label: 'Net debt / EBITDA', group: 'Leverage', category: 'leverage', unit: 'x' },
-  { key: 'pe', label: 'P / E', group: 'Valuation', category: 'valuation', unit: 'x' },
-  { key: 'pb', label: 'P / B', group: 'Valuation', category: 'valuation', unit: 'x' },
-  { key: 'evEbitda', label: 'EV / EBITDA', group: 'Valuation', category: 'valuation', unit: 'x' },
-  { key: 'fcfYield', label: 'Free cash flow yield', group: 'Valuation', category: 'valuation', unit: '%' },
+  { key: 'revenueGrowth', label: 'Revenue growth', group: 'Growth', category: 'profitability', unit: '%', description: 'Year-over-year percentage change in the reported top-line measure. A positive value means it increased; a negative value means it fell. The reported measure can differ for banks and other industries.' },
+  { key: 'grossMargin', label: 'Gross margin', group: 'Profitability', category: 'profitability', unit: '%', description: 'Gross profit divided by revenue. It shows the share of revenue left after direct costs, before most operating expenses. Normal levels vary by industry.' },
+  { key: 'operatingMargin', label: 'Operating margin', group: 'Profitability', category: 'profitability', unit: '%', description: 'Operating income divided by revenue. It shows the share of revenue left after operating expenses, before interest and tax.' },
+  { key: 'netMargin', label: 'Net margin', group: 'Profitability', category: 'profitability', unit: '%', description: 'Net income divided by the reported top-line measure. For example, 10% means about 10 of net income for every 100 of that measure. Definitions and comparability can vary, especially for banks.' },
+  { key: 'roe', label: 'Return on equity', group: 'Returns', category: 'profitability', unit: '%', description: 'Net income relative to shareholders’ equity. A high value can reflect strong returns, but can also be amplified by debt, buybacks, or a small equity base.' },
+  { key: 'roa', label: 'Return on assets', group: 'Returns', category: 'profitability', unit: '%', description: 'Net income relative to total assets. It gives a view of earnings generated from the asset base; compare carefully across industries.' },
+  { key: 'roce', label: 'Return on capital employed', group: 'Returns', category: 'profitability', unit: '%', description: 'Operating profit relative to the capital used in the business. The exact formula can vary with the facts available in each company’s filings.' },
+  { key: 'currentRatio', label: 'Current ratio', group: 'Liquidity', category: 'liquidity', unit: 'x', description: 'Current assets divided by current liabilities. A value of 1.2× means 1.20 of current assets for each 1.00 of current liabilities at the reporting date. Seasonality and industry norms matter.' },
+  { key: 'debtEquity', label: 'Debt / equity', group: 'Leverage', category: 'leverage', unit: 'x', description: 'Reported debt divided by shareholders’ equity. It describes balance-sheet leverage; small or negative equity can make the ratio unusually large or hard to interpret.' },
+  { key: 'netDebtEbitda', label: 'Net debt / EBITDA', group: 'Leverage', category: 'leverage', unit: 'x', description: 'Net debt divided by EBITDA. A negative figure often means cash exceeds debt under the calculation used. EBITDA is not cash flow, and sector context matters.' },
+  { key: 'pe', label: 'P / E', group: 'Valuation', category: 'valuation', unit: 'x', description: 'Share price divided by earnings per share. It relates market price to reported earnings. This app leaves it blank when it does not have suitable price data.' },
+  { key: 'pb', label: 'P / B', group: 'Valuation', category: 'valuation', unit: 'x', description: 'Market value of equity divided by book value of equity. It can be less useful for companies whose value comes mainly from intangible assets.' },
+  { key: 'evEbitda', label: 'EV / EBITDA', group: 'Valuation', category: 'valuation', unit: 'x', description: 'Enterprise value divided by EBITDA. It compares business value with operating earnings before interest, tax, depreciation, and amortization.' },
+  { key: 'fcfYield', label: 'Free cash flow yield', group: 'Valuation', category: 'valuation', unit: '%', description: 'Free cash flow divided by market capitalization. It needs market-price data, so it may be blank in filing-only modes.' },
 ];
 
 export const CATEGORIES = [
