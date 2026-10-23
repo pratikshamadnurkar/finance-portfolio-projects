@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "catalogType": "curated-seed-with-live-discovery-fallback",
+  "markets": {
+    "us": {
+      "name": "United States",
+      "countryCode": "US",
+      "currency": "USD",
+      "provider": "SEC EDGAR",
+      "symbols": [
+        { "symbol": "AAPL", "name": "Apple Inc.", "aliases": ["Apple"], "exchange": "NASDAQ" },
+        { "symbol": "MSFT", "name": "Microsoft Corporation", "aliases": ["Microsoft"], "exchange": "NASDAQ" },
+        { "symbol": "NVDA", "name": "NVIDIA Corporation", "aliases": ["NVIDIA", "Nvidia"], "exchange": "NASDAQ" },
+        { "symbol": "AMZN", "name": "Amazon.com, Inc.", "aliases": ["Amazon"], "exchange": "NASDAQ" },
+        { "symbol": "COST", "name": "Costco Wholesale Corp.", "aliases": ["Costco"], "exchange": "NASDAQ" },
+        { "symbol": "GOOGL", "name": "Alphabet Inc.", "aliases": ["Google", "Alphabet", "GOOG"], "exchange": "NASDAQ" },
+        { "symbol": "META", "name": "Meta Platforms, Inc.", "aliases": ["Meta", "Facebook"], "exchange": "NASDAQ" },
+        { "symbol": "TSLA", "name": "Tesla, Inc.", "aliases": ["Tesla"], "exchange": "NASDAQ" },
+        { "symbol": "BRK.B", "name": "Berkshire Hathaway Inc.", "aliases": ["Berkshire Hathaway", "Berkshire"], "exchange": "NYSE" },
+        { "symbol": "JPM", "name": "JPMorgan Chase & Co.", "aliases": ["JPMorgan", "JP Morgan"], "exchange": "NYSE" },
+        { "symbol": "WMT", "name": "Walmart Inc.", "aliases": ["Walmart"], "exchange": "NYSE" },
+        { "symbol": "AVGO", "name": "Broadcom Inc.", "aliases": ["Broadcom"], "exchange": "NASDAQ" }
+      ]
+    },
+    "india": {
+      "name": "India",
+      "countryCode": "IN",
+      "currency": "INR",
+      "provider": "IndianAPI",
+      "symbols": [
+        { "symbol": "RELIANCE.BSE", "name": "Reliance Industries Limited", "aliases": ["Reliance", "Reliance Industries", "RELIANCE.NSE"], "exchange": "BSE" },
+        { "symbol": "TCS.BSE", "name": "Tata Consultancy Services Limited", "aliases": ["TCS", "Tata Consultancy Services", "TCS.NSE"], "exchange": "BSE" },
+        { "symbol": "INFY.BSE", "name": "Infosys Limited", "aliases": ["Infosys", "INFY.NSE"], "exchange": "BSE" },
+        { "symbol": "HDFCBANK.BSE", "name": "HDFC Bank Limited", "aliases": ["HDFC Bank", "HDFCBANK.NSE"], "exchange": "BSE" },
+        { "symbol": "ICICIBANK.BSE", "name": "ICICI Bank Limited", "aliases": ["ICICI Bank", "ICICIBANK.NSE"], "exchange": "BSE" },
+        { "symbol": "SBIN.BSE", "name": "State Bank of India", "aliases": ["SBI", "State Bank of India", "SBIN.NSE"], "exchange": "BSE" },
+        { "symbol": "BHARTIARTL.BSE", "name": "Bharti Airtel Limited", "aliases": ["Airtel", "Bharti Airtel", "BHARTIARTL.NSE"], "exchange": "BSE" },
+        { "symbol": "ITC.BSE", "name": "ITC Limited", "aliases": ["ITC", "ITC.NSE"], "exchange": "BSE" },
+        { "symbol": "LT.BSE", "name": "Larsen & Toubro Limited", "aliases": ["Larsen and Toubro", "L&T", "LT.NSE"], "exchange": "BSE" },
+        { "symbol": "HINDUNILVR.BSE", "name": "Hindustan Unilever Limited", "aliases": ["HUL", "Hindustan Unilever", "HINDUNILVR.NSE"], "exchange": "BSE" },
+        { "symbol": "KOTAKBANK.BSE", "name": "Kotak Mahindra Bank Limited", "aliases": ["Kotak Bank", "KOTAKBANK.NSE"], "exchange": "BSE" },
+        { "symbol": "WIPRO.BSE", "name": "Wipro Limited", "aliases": ["Wipro", "WIPRO.NSE"], "exchange": "BSE" }
+      ]
+    },
+    "uk": {
+      "name": "United Kingdom",
+      "countryCode": "GB",
+      "currency": "GBP",
+      "provider": "SEC EDGAR IFRS filings",
+      "symbols": [
+        { "symbol": "AZN.LSE", "secTicker": "AZN", "name": "AstraZeneca PLC", "aliases": ["AstraZeneca"], "exchange": "LSE", "sector": "Pharmaceuticals", "color": "#4b78b8", "peers": ["GSK.LSE", "SHEL.LSE", "HSBA.LSE"] },
+        { "symbol": "SHEL.LSE", "secTicker": "SHEL", "name": "Shell plc", "aliases": ["Shell", "Royal Dutch Shell"], "exchange": "LSE", "sector": "Energy", "color": "#3792a0", "peers": ["BP.LSE", "AZN.LSE", "HSBA.LSE"] },
+        { "symbol": "HSBA.LSE", "secTicker": "HSBC", "name": "HSBC Holdings plc", "aliases": ["HSBC"], "exchange": "LSE", "sector": "Banking", "color": "#3d69b1", "peers": ["BARC.LSE", "LLOY.LSE", "NWG.LSE"] },
+        { "symbol": "ULVR.LSE", "secTicker": "UL", "name": "Unilever PLC", "aliases": ["Unilever"], "exchange": "LSE", "sector": "Consumer goods", "color": "#427fb8", "peers": ["DGE.LSE", "BATS.LSE", "AZN.LSE"] },
+        { "symbol": "BP.LSE", "secTicker": "BP", "name": "BP p.l.c.", "aliases": ["BP"], "exchange": "LSE", "sector": "Energy", "color": "#347b72", "peers": ["SHEL.LSE", "AZN.LSE", "HSBA.LSE"] },
+        { "symbol": "GSK.LSE", "secTicker": "GSK", "name": "GSK plc", "aliases": ["GSK", "GlaxoSmithKline"], "exchange": "LSE", "sector": "Pharmaceuticals", "color": "#a84e87", "peers": ["AZN.LSE", "ULVR.LSE", "DGE.LSE"] },
+        { "symbol": "BARC.LSE", "secTicker": "BCS", "name": "Barclays PLC", "aliases": ["Barclays"], "exchange": "LSE", "sector": "Banking", "color": "#4771a8", "peers": ["HSBA.LSE", "LLOY.LSE", "NWG.LSE"] },
+        { "symbol": "RIO.LSE", "secTicker": "RIO", "name": "Rio Tinto plc", "aliases": ["Rio Tinto"], "exchange": "LSE", "sector": "Mining", "color": "#697a9b", "peers": ["GLEN.LSE", "AAL.LSE", "SHEL.LSE"] },
+        { "symbol": "DGE.LSE", "secTicker": "DEO", "name": "Diageo plc", "aliases": ["Diageo"], "exchange": "LSE", "sector": "Beverages", "color": "#505b69", "peers": ["ULVR.LSE", "BATS.LSE", "GSK.LSE"] },
+        { "symbol": "LLOY.LSE", "secTicker": "LYG", "name": "Lloyds Banking Group plc", "aliases": ["Lloyds", "Lloyds Bank"], "exchange": "LSE", "sector": "Banking", "color": "#36785e", "peers": ["HSBA.LSE", "BARC.LSE", "NWG.LSE"] },
+        { "symbol": "BATS.LSE", "secTicker": "BTI", "name": "British American Tobacco p.l.c.", "aliases": ["BAT", "British American Tobacco"], "exchange": "LSE", "sector": "Consumer goods", "color": "#cf7d34", "peers": ["ULVR.LSE", "DGE.LSE", "GSK.LSE"] },
+        { "symbol": "NG.LSE", "secTicker": "NGG", "name": "National Grid plc", "aliases": ["National Grid"], "exchange": "LSE", "sector": "Utilities", "color": "#ec7931", "peers": ["SHEL.LSE", "BP.LSE", "HSBA.LSE"] }
+      ]
+    }
+  }
+}
