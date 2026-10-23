@@ -4,7 +4,7 @@ Hi, I'm Pratiksha Madnurkar.
 
 I am an MSc Economics & Finance graduate with 2+ years of experience in financial reporting, forecasting, variance analysis, and process automation.
 
-This repository showcases finance, analytics, and financial modelling projects developed using Excel, Power BI, R, and SQL.
+This repository showcases finance, analytics, and financial modelling projects developed using Excel, Power BI, R, SQL, React, Node.js, and Express.
 
 ---
 
@@ -12,6 +12,7 @@ This repository showcases finance, analytics, and financial modelling projects d
 
 | Project | Focus Area | Tools |
 |----------|----------|----------|
+| [MarketLens — Company Fundamentals Dashboard](./company-fundamentals-dashboard/README.md) | U.S., India & London company financials, ratios & comparison | React, Vite, Node.js, Express |
 | FP&A Dashboard – Ferrari Financial Performance | KPI Reporting & Performance Analysis | R, Shiny, Plotly |
 | Power BI – Financial Analysis Dashboard | KPI Reporting, Data Modelling & DAX | Power BI, Power Query, DAX |
 | DCF Valuation Model | Financial Modelling & Valuation | Excel |
