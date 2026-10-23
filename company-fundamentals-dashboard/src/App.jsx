@@ -37,13 +37,102 @@ function getRatio(company, mode, year) {
   return mode === 'demo' ? company.demo?.ratios?.[year] : company.ratios;
 }
 
-function SummaryCard({ label, value, note, tone = 'neutral', icon }) {
+function InfoButton({ label, text, onOpen }) {
+  return <button className="info-button" type="button" aria-label={`Explain ${label}`} title={`Explain ${label}`} onClick={() => onOpen(label, text)}>i</button>;
+}
+
+function InfoModal({ title, text, onClose }) {
+  useEffect(() => {
+    function onKey(event) { if (event.key === 'Escape') onClose(); }
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  return (
+    <div className="modal-backdrop info-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
+      <section className="modal info-modal" role="dialog" aria-modal="true" aria-labelledby="info-modal-title">
+        <div className="modal-head">
+          <div><div className="eyebrow">Metric guide</div><h2 id="info-modal-title">{title}</h2></div>
+          <button className="close-button" type="button" onClick={onClose} aria-label="Close explanation">×</button>
+        </div>
+        <p className="info-modal-copy">{text}</p>
+      </section>
+    </div>
+  );
+}
+
+function SummaryCard({ label, value, note, tone = 'neutral', icon, help, onInfo }) {
   return (
     <article className="summary-card">
-      <div className="summary-top"><span>{label}</span><span className="summary-icon" aria-hidden="true">{icon}</span></div>
+      <div className="summary-top"><span className="summary-label">{label}{help && <InfoButton label={label} text={help} onOpen={onInfo} />}</span><span className="summary-icon" aria-hidden="true">{icon}</span></div>
       <div className="summary-value tabular">{value}</div>
       <div className={`summary-foot ${tone}`}>{note}</div>
     </article>
+  );
+}
+
+function isAvailable(value) {
+  return value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
+}
+
+function buildInsights(ratios) {
+  const insights = [];
+  if (isAvailable(ratios?.revenueGrowth)) {
+    const growth = Number(ratios.revenueGrowth);
+    insights.push({
+      title: 'Growth',
+      text: growth > 0
+        ? `The reported top-line measure grew ${growth.toFixed(1)}% year over year.`
+        : growth < 0
+          ? `The reported top-line measure fell ${Math.abs(growth).toFixed(1)}% year over year.`
+          : 'The reported top-line measure was unchanged year over year.',
+    });
+  }
+  if (isAvailable(ratios?.netMargin)) {
+    const margin = Number(ratios.netMargin);
+    insights.push({
+      title: 'Profitability',
+      text: `Net margin is ${margin.toFixed(1)}%: roughly ${margin.toFixed(1)} of net income for every 100 of the reported top-line measure.`,
+    });
+  }
+  if (isAvailable(ratios?.currentRatio)) {
+    const currentRatio = Number(ratios.currentRatio);
+    insights.push({
+      title: 'Short-term liquidity',
+      text: currentRatio < 1
+        ? `Current assets are ${currentRatio.toFixed(2)}× current liabilities at the reporting date; review alongside cash flow, seasonality, and the business model.`
+        : `Current assets are ${currentRatio.toFixed(2)}× current liabilities at the reporting date. This is one balance-sheet measure, not a complete liquidity assessment.`,
+    });
+  }
+  if (isAvailable(ratios?.netDebtEbitda)) {
+    const leverage = Number(ratios.netDebtEbitda);
+    insights.push({
+      title: 'Net debt and earnings',
+      text: leverage < 0
+        ? `Net debt / EBITDA is ${leverage.toFixed(2)}×; a negative value usually means cash exceeds debt under this calculation.`
+        : `Net debt / EBITDA is ${leverage.toFixed(2)}×, comparing net debt with EBITDA. EBITDA is not cash flow, and industry context matters.`,
+    });
+  } else if (isAvailable(ratios?.debtEquity)) {
+    const leverage = Number(ratios.debtEquity);
+    insights.push({
+      title: 'Debt and equity',
+      text: `Debt / equity is ${leverage.toFixed(2)}×. Small or negative equity can make this ratio unusually large or difficult to compare.`,
+    });
+  }
+  return insights;
+}
+
+function QuickRead({ ratios, mode, onInfo }) {
+  const insights = buildInsights(ratios);
+  return (
+    <section className="panel quick-read" aria-labelledby="quick-read-title">
+      <div className="panel-head">
+        <div><h2 id="quick-read-title">Quick read</h2><p>Plain-language context for the figures shown</p></div>
+        <InfoButton label="Quick read" text="These notes are generated from the displayed ratios using simple rules. They describe what a metric says mathematically; they are not a buy/sell rating. Comparisons depend on industry, reporting periods, and accounting definitions." onOpen={onInfo} />
+      </div>
+      {insights.length ? <div className="insight-grid">{insights.map((insight) => <article className="insight-item" key={insight.title}><h3>{insight.title}</h3><p>{insight.text}</p></article>)}</div> : <p className="insight-empty">Interpretation appears when the selected company has usable ratio data.</p>}
+      <div className="interpretation-note">{mode === 'demo' ? 'Sample figures are illustrative.' : 'Values reflect reported data and can use company-specific definitions.'} Read alongside the source filing; missing values are not treated as zero.</div>
+    </section>
   );
 }
 
@@ -193,7 +282,7 @@ function Chart({ company, peers, mode, metric, market }) {
   );
 }
 
-function RatioTable({ active, peers, company, companies, mode, year, category, market }) {
+function RatioTable({ active, peers, company, companies, mode, year, category, market, onInfo }) {
   const columns = [active, ...peers.map((company) => company.symbol)];
   const rows = RATIO_ROWS.filter((row) => category === 'all' || row.category === category);
   return (
@@ -206,7 +295,7 @@ function RatioTable({ active, peers, company, companies, mode, year, category, m
           return <th scope="col" className={symbol === active ? 'focus-col' : ''} key={symbol}><span className="table-company"><span className="company-mini" style={{ backgroundColor: `${metaCompany.color}20`, color: metaCompany.color }}>{symbol.slice(0, 1)}</span>{symbol.split('.')[0]}</span><small>{mode === 'indianapi' && fiscalYear ? `FY ${fiscalYear} · key ratios current` : fiscalYear ? `FY ${fiscalYear}` : mode === 'sec' ? 'Latest 10-K' : mode === 'indianapi' || mode === 'eodhd' ? 'Latest annual' : ''}</small></th>;
         })}</tr></thead>
         <tbody>{rows.map((row) => <tr key={row.key}>
-          <th scope="row" className="ratio-name">{row.label}<small>{row.group}</small></th>
+          <th scope="row" className="ratio-name"><span className="ratio-label-wrap">{row.label}<InfoButton label={row.label} text={row.description} onOpen={onInfo} /></span><small>{row.group}</small></th>
           {columns.map((symbol) => {
             const liveRecord = symbol === active ? company : peers.find((item) => item.symbol === symbol);
             const ratio = mode === 'demo'
@@ -251,6 +340,10 @@ export default function App() {
   const [searchCandidates, setSearchCandidates] = useState([]);
   const [apiModalOpen, setApiModalOpen] = useState(false);
   const [addSymbolOpen, setAddSymbolOpen] = useState(false);
+  const [infoContent, setInfoContent] = useState(null);
+
+  function openInfo(title, text) { setInfoContent({ title, text }); }
+  function closeInfo() { setInfoContent(null); }
 
   useEffect(() => {
     localStorage.setItem('northstar.customCompanies', JSON.stringify(customCompanies));
@@ -504,28 +597,32 @@ export default function App() {
         {mode !== 'demo' && <div className={`connection-banner ${liveState}`} role={liveState === 'error' ? 'alert' : 'status'}><span className="banner-dot" /><span>{liveMessage || `Waiting for ${MARKET_LABELS[market]} data…`}</span></div>}
 
         <section className="summary-grid" aria-label="Company summary metrics">
-          <SummaryCard label={mode !== 'demo' && market === 'uk' ? focusRecord.topLineLabel || 'Revenue' : 'Revenue'} value={formatMoneyBillions(summary.revenue, market, focusRecord.currency)} note={mode === 'demo' ? 'Illustrative annual revenue' : market === 'india' ? 'Latest annual statement · ₹ crore' : market === 'uk' ? `Latest annual statement · ${focusRecord.currency || 'GBP'} billions` : 'Latest 10-K · USD billions'} icon="▥" />
-          <SummaryCard label="Free cash flow" value={formatMoneyBillions(summary.fcf, market, focusRecord.currency)} note={mode === 'demo' ? 'Illustrative cash flow' : market === 'india' ? 'Operating cash flow less capex · ₹ crore' : market === 'uk' ? `Operating cash flow less capex · ${focusRecord.currency || 'GBP'} billions` : 'Operating cash flow less capex'} icon="◌" />
-          <SummaryCard label="Net margin" value={formatRatio(summary.ratio?.netMargin, '%')} note="Net income / revenue" tone="positive" icon="◉" />
-          <SummaryCard label="Revenue growth" value={formatRatio(summary.ratio?.revenueGrowth, '%')} note="Year over year" tone="positive" icon="↗" />
+          <SummaryCard label={mode !== 'demo' && market === 'uk' ? focusRecord.topLineLabel || 'Revenue' : 'Revenue'} value={formatMoneyBillions(summary.revenue, market, focusRecord.currency)} note={mode === 'demo' ? 'Illustrative annual revenue' : market === 'india' ? 'Latest annual statement · ₹ crore' : market === 'uk' ? `Latest annual statement · ${focusRecord.currency || 'GBP'} billions` : 'Latest 10-K · USD billions'} icon="▥" help="The latest annual top-line amount available for this company. For some companies, especially banks, the filing uses a different measure such as net interest income. Currency and units are shown with the amount." onInfo={openInfo} />
+          <SummaryCard label="Free cash flow" value={formatMoneyBillions(summary.fcf, market, focusRecord.currency)} note={mode === 'demo' ? 'Illustrative cash flow' : market === 'india' ? 'Operating cash flow less capex · ₹ crore' : market === 'uk' ? `Operating cash flow less capex · ${focusRecord.currency || 'GBP'} billions` : 'Operating cash flow less capex'} icon="◌" help="Operating cash flow minus capital expenditure. It is a cash-based measure, but can move with working capital, investment timing, and the company’s reporting choices." onInfo={openInfo} />
+          <SummaryCard label="Net margin" value={formatRatio(summary.ratio?.netMargin, '%')} note="Net income / reported top line" tone="positive" icon="◉" help="Net income as a percentage of the reported top-line measure. A higher value is not automatically better; margins vary by sector and the top-line definition can differ." onInfo={openInfo} />
+          <SummaryCard label="Revenue growth" value={formatRatio(summary.ratio?.revenueGrowth, '%')} note="Year over year" tone="positive" icon="↗" help="Percentage change in the reported top-line measure from the prior fiscal year. Check the fiscal periods and any changes in reporting currency or company structure." onInfo={openInfo} />
         </section>
+
+        <QuickRead ratios={selectedRatios} mode={mode} onInfo={openInfo} />
 
         <section className="content-grid" id="trend">
-          <div className="panel chart-panel"><div className="panel-head"><div><h2>Operating trajectory</h2><p>{chartMetric === 'revenue' ? `${mode !== 'demo' && market === 'uk' ? focusRecord.topLineLabel || 'Annual revenue' : 'Annual revenue'} · ${market === 'india' ? '₹ crore' : market === 'uk' ? `${focusRecord.currency || 'GBP'} billions` : 'USD billions'}` : 'Operating margin · percent'}</p></div><div className="segmented" role="group" aria-label="Chart metric"><button className={chartMetric === 'revenue' ? 'active' : ''} type="button" onClick={() => setChartMetric('revenue')}>{mode !== 'demo' && market === 'uk' ? focusRecord.topLineLabel || 'Revenue' : 'Revenue'}</button><button className={chartMetric === 'margin' ? 'active' : ''} type="button" onClick={() => setChartMetric('margin')}>Operating margin</button></div></div><div className="chart-legend"><span><i className="legend-key" />{active.split('.')[0]}</span><span><i className="legend-key peer" />Peer median</span></div><Chart company={focusRecord} peers={peerRecords} mode={mode} metric={chartMetric} market={market} /><div className="chart-note">Peer medians are shown only when comparison companies report the same top-line measure and currency. Missing facts are left blank.</div></div>
-          <aside className="panel capital-panel"><div className="panel-head"><div><h2>Capital structure</h2><p>Leverage and liquidity ratios</p></div><span className="year-pill">{currentYear ? `FY ${currentYear}` : mode === 'demo' ? `FY ${year}` : 'Latest'}</span></div><div className="capital-list">{[['Current ratio', 'currentRatio', 'x'], ['Debt / equity', 'debtEquity', 'x'], ['Net debt / EBITDA', 'netDebtEbitda', 'x'], ['Return on equity', 'roe', '%']].map(([label, key, unit]) => <div className="capital-row" key={key}><span>{label}</span><strong>{formatRatio(selectedRatios?.[key], unit)}</strong></div>)}</div><div className="capital-note">{mode === 'demo' ? 'Illustrative values; replace before presenting as analysis.' : market === 'india' ? 'IndianAPI ratios are mapped from named provider fields; verify definitions against company filings.' : market === 'uk' ? 'London IFRS filing facts; verify ratio definitions against the linked source filing.' : 'Calculated from SEC filing facts. Inspect the linked filing for context.'}</div></aside>
+          <div className="panel chart-panel"><div className="panel-head"><div><div className="panel-title-line"><h2>Operating trajectory</h2><InfoButton label="Operating trajectory" text="Annual bars show the selected company and, where reported figures are comparable, a peer median. Switch between the reported top-line measure and operating margin. Gaps mean a comparable value was not available." onOpen={openInfo} /></div><p>{chartMetric === 'revenue' ? `${mode !== 'demo' && market === 'uk' ? focusRecord.topLineLabel || 'Annual revenue' : 'Annual revenue'} · ${market === 'india' ? '₹ crore' : market === 'uk' ? `${focusRecord.currency || 'GBP'} billions` : 'USD billions'}` : 'Operating margin · percent'}</p></div><div className="segmented" role="group" aria-label="Chart metric"><button className={chartMetric === 'revenue' ? 'active' : ''} type="button" onClick={() => setChartMetric('revenue')}>{mode !== 'demo' && market === 'uk' ? focusRecord.topLineLabel || 'Revenue' : 'Revenue'}</button><button className={chartMetric === 'margin' ? 'active' : ''} type="button" onClick={() => setChartMetric('margin')}>Operating margin</button></div></div><div className="chart-legend"><span><i className="legend-key" />{active.split('.')[0]}</span><span><i className="legend-key peer" />Peer median</span></div><Chart company={focusRecord} peers={peerRecords} mode={mode} metric={chartMetric} market={market} /><div className="chart-note">Peer medians are shown only when comparison companies report the same top-line measure and currency. Missing facts are left blank.</div></div>
+          <aside className="panel capital-panel"><div className="panel-head"><div><div className="panel-title-line"><h2>Capital structure</h2><InfoButton label="Capital structure" text="A compact view of liquidity, leverage, and shareholder returns. These measures describe different parts of the balance sheet and earnings; compare them with the source filing and similar companies." onOpen={openInfo} /></div><p>Leverage and liquidity ratios</p></div><span className="year-pill">{currentYear ? `FY ${currentYear}` : mode === 'demo' ? `FY ${year}` : 'Latest'}</span></div><div className="capital-list">{[['Current ratio', 'currentRatio', 'x'], ['Debt / equity', 'debtEquity', 'x'], ['Net debt / EBITDA', 'netDebtEbitda', 'x'], ['Return on equity', 'roe', '%']].map(([label, key, unit]) => <div className="capital-row" key={key}><span>{label}<InfoButton label={label} text={RATIO_ROWS.find((row) => row.key === key)?.description || 'A financial ratio calculated from available company data.'} onOpen={openInfo} /></span><strong>{formatRatio(selectedRatios?.[key], unit)}</strong></div>)}</div><div className="capital-note">{mode === 'demo' ? 'Illustrative values; replace before presenting as analysis.' : market === 'india' ? 'IndianAPI ratios are mapped from named provider fields; verify definitions against company filings.' : market === 'uk' ? 'London IFRS filing facts; verify ratio definitions against the linked source filing.' : 'Calculated from SEC filing facts. Inspect the linked filing for context.'}</div></aside>
         </section>
 
-        <section className="panel table-panel" id="ratios"><div className="panel-head table-heading"><div><h2>Ratio comparison</h2><p>Side-by-side fundamentals across selected companies</p></div><div className="table-controls"><div className="category-filters" aria-label="Filter ratio categories">{CATEGORIES.map((item) => <button className={category === item.key ? 'active' : ''} type="button" key={item.key} onClick={() => setCategory(item.key)}>{item.label}</button>)}</div><select value={year} onChange={(event) => setYear(Number(event.target.value))} aria-label="Fiscal year" disabled={mode !== 'demo'}><option value={2025}>FY 2025</option><option value={2024}>FY 2024</option><option value={2023}>FY 2023</option></select>{market === 'us' ? <button className={`mode-toggle ${mode === 'sec' ? 'is-live' : ''}`} type="button" onClick={() => { if (mode === 'demo') { setMode('sec'); setYear(2025); } else returnToDemo(); }}>{mode === 'demo' ? 'Load SEC data' : 'Return to demo'}</button> : <span className="mode-toggle is-live">{market === 'india' ? 'India · IndianAPI' : 'UK · SEC (free)'}</span>}</div></div>
+        <section className="panel table-panel" id="ratios"><div className="panel-head table-heading"><div><div className="panel-title-line"><h2>Ratio comparison</h2><InfoButton label="Ratio comparison" text="This table compares accounting ratios for the selected company and its watchlist peers. Use the category filters to narrow the rows. Blank values mean a usable input was not available; they do not mean zero." onOpen={openInfo} /></div><p>Side-by-side fundamentals across selected companies</p></div><div className="table-controls"><div className="category-filters" aria-label="Filter ratio categories">{CATEGORIES.map((item) => <button className={category === item.key ? 'active' : ''} type="button" key={item.key} onClick={() => setCategory(item.key)}>{item.label}</button>)}</div><select value={year} onChange={(event) => setYear(Number(event.target.value))} aria-label="Fiscal year" disabled={mode !== 'demo'}><option value={2025}>FY 2025</option><option value={2024}>FY 2024</option><option value={2023}>FY 2023</option></select>{market === 'us' ? <button className={`mode-toggle ${mode === 'sec' ? 'is-live' : ''}`} type="button" onClick={() => { if (mode === 'demo') { setMode('sec'); setYear(2025); } else returnToDemo(); }}>{mode === 'demo' ? 'Load SEC data' : 'Return to demo'}</button> : <span className="mode-toggle is-live">{market === 'india' ? 'India · IndianAPI' : 'UK · SEC (free)'}</span>}</div></div>
+          <p className="table-swipe-note">On a small screen, swipe horizontally to compare companies.</p>
           {mode === 'sec' && <div className="live-note">SEC mode uses each company’s latest annual filing. P/E and free cash flow yield need a market-price API and are intentionally blank.</div>}
           {mode === 'indianapi' && <div className="live-note">India mode uses the IndianAPI stock response. Financial amounts need an explicit unit; ratios are mapped only from recognized provider fields.</div>}
           {mode === 'eodhd' && <div className="live-note">London companies use SEC EDGAR annual IFRS facts where available. Amounts retain each issuer’s reported currency; unsupported inputs remain blank.</div>}
-          <RatioTable active={active} peers={peerRecords} company={focusRecord} companies={companies} mode={mode} year={year} category={category} market={market} />
+          <RatioTable active={active} peers={peerRecords} company={focusRecord} companies={companies} mode={mode} year={year} category={category} market={market} onInfo={openInfo} />
           <div className="table-foot"><span>{mode === 'demo' ? 'Figures are illustrative placeholders and are not sourced.' : `Source: ${market === 'india' ? 'IndianAPI Fundamentals API' : market === 'uk' ? focusRecord.source || 'SEC EDGAR IFRS annual filings' : 'SEC EDGAR Company Facts'}${focusRecord.filed ? ` · Filed ${focusRecord.filed}` : ''}. Periods can vary by company.`}</span><span>{mode === 'demo' ? 'Use SEC mode to request live filing data.' : liveState === 'loading' ? 'Loading company statements…' : market === 'india' ? 'Blank ratios mean the provider lacks the input or does not publish that ratio.' : market === 'uk' ? 'Blank ratios mean the filing does not provide a required input or comparable line item.' : 'Accounting ratios only; market valuation multiples require pricing data.'}</span></div>
         </section>
         <footer className="footer-line"><span>MarketLens · Finance portfolio project</span><button type="button" onClick={() => setApiModalOpen(true)}>API notes</button></footer>
       </main>
       {market === 'us' && <button className="floating-mode" type="button" onClick={() => { if (mode === 'demo') setMode('sec'); else returnToDemo(); }}>{mode === 'demo' ? '↗ Try SEC live' : '⌂ Demo mode'}</button>}
       {apiModalOpen && <ApiModal onClose={() => setApiModalOpen(false)} />}
+      {infoContent && <InfoModal title={infoContent.title} text={infoContent.text} onClose={closeInfo} />}
       {addSymbolOpen && <AddSymbolModal onClose={() => setAddSymbolOpen(false)} onAdd={addCompany} market={market} />}
     </div>
   );
