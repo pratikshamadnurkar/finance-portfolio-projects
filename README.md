@@ -14,9 +14,8 @@ This repository showcases finance, analytics, and financial modelling projects d
 |----------|----------|----------|
 | [BlackRock — Interactive Three-Statement Model](./BlackRock-Three-Statement-Model/README.md) ([Live dashboard](https://pratikshamadnurkar.github.io/finance-portfolio-projects/BlackRock-Three-Statement-Model/blackrock-three-statement-dashboard.html)) | Integrated statements, forecast drivers & model checks | HTML, CSS, JavaScript, financial modelling |
 | [MarketLens — Company Fundamentals Dashboard](./company-fundamentals-dashboard/README.md) | U.S., India & London company financials, ratios & comparison | React, Vite, Node.js, Express |
-| FP&A Dashboard – Ferrari Financial Performance | KPI Reporting & Performance Analysis | R, Shiny, Plotly |
+| Ferrari N.V. - DCF Valuation Dashboard | KPI Reporting & Performance Analysis | Excel, HTML, R |
 | Power BI – Financial Analysis Dashboard | KPI Reporting, Data Modelling & DAX | Power BI, Power Query, DAX |
-| DCF Valuation Model | Financial Modelling & Valuation | Excel |
 | Credit Risk Prediction Model | Risk Analytics | R |
 | GDP Forecasting Model | Econometrics & Forecasting | R, ARIMA |
 | Portfolio Optimization | Asset Management | R |
