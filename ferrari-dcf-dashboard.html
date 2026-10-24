@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#11151c">
+<meta name="description" content="Interactive Ferrari N.V. discounted cash flow valuation dashboard.">
+<title>Ferrari N.V. | DCF Valuation</title>
+<style>
+:root{color-scheme:light;--ink:#15191f;--muted:#69727e;--paper:#f5f6f8;--surface:#fff;--line:#e4e7eb;--red:#d9282d;--red-dark:#a9141a;--red-pale:#fff0f0;--green:#168b67;--navy:#11151c;--shadow:0 12px 32px rgba(16,24,40,.055);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-synthesis:none;text-rendering:optimizeLegibility}
+*{box-sizing:border-box}body{margin:0;color:var(--ink);background:var(--paper)}button,input{font:inherit}a{color:inherit}
+.topbar{min-height:56px;color:#d9dee7;background:var(--navy);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,56px);gap:16px}
+.brand{display:flex;gap:10px;align-items:center;font-size:12px;font-weight:750;letter-spacing:.12em;text-transform:uppercase}.brand-mark{width:9px;height:9px;border-radius:2px;transform:rotate(45deg);background:var(--red)}.top-meta{color:#9ca6b3;font-size:12px;letter-spacing:.04em}
+main{max-width:1240px;margin:0 auto;padding:32px clamp(16px,4vw,52px) 56px}.eyebrow{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em}.eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px #e9f7f1}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(270px,360px);align-items:end;gap:28px;padding:24px 0 26px}h1{margin:11px 0 5px;font-size:clamp(30px,4.3vw,48px);line-height:1.04;letter-spacing:-.055em;font-weight:760}.subhead{margin:9px 0 0;color:var(--muted);max-width:640px;line-height:1.55;font-size:14px}.company-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}.tag{border:1px solid var(--line);background:rgba(255,255,255,.75);color:#505a66;padding:6px 9px;border-radius:4px;font-size:11px;font-weight:650}
+.hero-valuation{background:var(--navy);color:#fff;border-radius:8px;padding:21px 22px 19px;box-shadow:var(--shadow);position:relative;overflow:hidden}.hero-valuation:after{content:"";width:160px;height:160px;border:1px solid rgba(255,255,255,.1);border-radius:50%;position:absolute;right:-72px;top:-85px;box-shadow:0 0 0 16px rgba(255,255,255,.025),0 0 0 34px rgba(255,255,255,.02)}.hero-valuation .label{color:#aeb8c5;text-transform:uppercase;letter-spacing:.11em;font-size:10px;font-weight:700}.hero-price{position:relative;z-index:1;margin-top:9px;font-size:clamp(34px,4vw,43px);line-height:1;font-weight:760;letter-spacing:-.05em}.hero-price small{color:#aeb8c5;font-size:18px;font-weight:550;letter-spacing:-.02em}.hero-context{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px;color:#b4bdc8;font-size:11px}.case-label{color:#fff;background:rgba(217,40,45,.92);border-radius:3px;padding:5px 7px;text-transform:uppercase;letter-spacing:.09em;font-weight:750;font-size:9px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 25px}.kpi{min-height:100px;border:1px solid var(--line);border-radius:7px;background:var(--surface);padding:16px 17px;box-shadow:0 2px 6px rgba(16,24,40,.02)}.kpi-label{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:11px;font-weight:630}.kpi-value{margin-top:11px;font-size:22px;font-weight:740;letter-spacing:-.035em;font-variant-numeric:tabular-nums}.kpi-note{margin-top:4px;color:#8a929d;font-size:10px}
+details.tip{display:inline-flex;position:relative;vertical-align:middle}details.tip summary{list-style:none;cursor:pointer;display:grid;place-items:center;width:16px;height:16px;border:1px solid #ccd2d9;border-radius:50%;color:#74808c;font-size:10px;font-weight:700}details.tip summary::-webkit-details-marker{display:none}details.tip p{position:absolute;z-index:5;left:20px;top:-12px;width:min(250px,70vw);margin:0;padding:10px 12px;border:1px solid #dadee4;border-radius:5px;background:#fff;box-shadow:var(--shadow);color:#46515e;font-size:11px;line-height:1.5;font-weight:450}
+.section{margin-top:27px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:0 0 12px}.section-title{margin:0;font-size:17px;font-weight:750;letter-spacing:-.025em}.section-subtitle{margin:5px 0 0;color:var(--muted);font-size:11px;line-height:1.45}.scenario-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px}.scenario-row>span{margin-right:5px;color:var(--muted);font-size:11px;font-weight:650}.scenario-button{min-height:34px;padding:0 13px;border:1px solid var(--line);border-radius:4px;background:#fff;color:#5a6470;font-size:11px;font-weight:700;cursor:pointer;transition:background .15s,color .15s,border-color .15s}.scenario-button:hover{border-color:#afb8c3}.scenario-button[aria-pressed=true]{color:#fff;border-color:var(--navy);background:var(--navy)}
+.viz-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.viz-panel{min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:17px 18px 15px}.viz-title{margin:0;font-size:12px;font-weight:730}.viz-unit{color:var(--muted);font-size:10px;font-weight:500;margin-left:4px}.plot{height:190px;margin-top:13px;display:flex;align-items:stretch;gap:10px;padding:10px 4px 0;border-bottom:1px solid #dfe3e8;background:repeating-linear-gradient(to bottom,transparent 0,transparent 45px,#edf0f3 46px,transparent 47px)}.plot-col{min-width:0;flex:1;display:grid;grid-template-rows:18px minmax(0,1fr) 19px;align-items:end;text-align:center}.plot-value{color:#626d79;font-size:9px;line-height:18px;font-variant-numeric:tabular-nums;white-space:nowrap}.bar-area{height:100%;display:flex;align-items:end;justify-content:center}.plot-bar{width:min(34px,68%);min-height:3px;border-radius:3px 3px 0 0;background:linear-gradient(180deg,#ed454a,#c91d24);transition:height .3s ease}.plot-bar.cash{background:linear-gradient(180deg,#34b48a,#168b67)}.plot-year{align-self:end;color:#7e8791;font-size:9px;line-height:19px}.plot-note{margin-top:9px;display:flex;justify-content:space-between;gap:8px;color:#89919b;font-size:9px}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:15px}.control{padding:16px 17px 14px;background:var(--surface);border:1px solid var(--line);border-radius:7px}.control-top{display:flex;justify-content:space-between;align-items:center;gap:12px}.control-label{font-size:11px;color:#58626f;font-weight:690}.control-value{font-size:15px;font-weight:750;font-variant-numeric:tabular-nums}input[type=range]{width:100%;accent-color:var(--red);margin:13px 0 0;cursor:pointer}.range-ends{display:flex;justify-content:space-between;color:#939ba5;font-size:9px;margin-top:2px}
+.interpretation{display:grid;grid-template-columns:38px minmax(0,1fr);gap:13px;padding:16px 18px;border-radius:7px;background:#fff;border:1px solid var(--line)}.interpret-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:50%;color:var(--red-dark);background:var(--red-pale);font-weight:800;font-size:15px}.interpretation h3{margin:1px 0 4px;font-size:12px}.interpretation p{margin:0;color:#616b77;font-size:11px;line-height:1.55}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:7px;background:#fff}table{width:100%;min-width:880px;border-collapse:collapse;font-size:10px;font-variant-numeric:tabular-nums}th,td{padding:10px 11px;border-bottom:1px solid #edf0f2;text-align:right;white-space:nowrap}th{color:#67717d;background:#fafbfc;font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}th:first-child,td:first-child{position:sticky;left:0;text-align:left;min-width:158px;background:#fff}th:first-child{background:#fafbfc}td:first-child{color:#4e5864;font-weight:620}tbody tr:last-child td{border-bottom:0}.forecast-col{background:#fffafa}th.forecast-col{background:#fff5f5}.table-note{color:#858e98;font-size:10px;margin:8px 2px 0}
+.bridge-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:13px}.bridge{background:#fff;border:1px solid var(--line);border-radius:7px;padding:16px 18px}.bridge-row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid #f0f1f3;color:#606a76;font-size:11px}.bridge-row:last-child{border:0;padding-bottom:0}.bridge-row strong{color:var(--ink);font-weight:720;font-variant-numeric:tabular-nums}.bridge-row.total{color:var(--ink);font-weight:740;border-top:1px solid #cfd5dc;margin-top:3px;padding-top:11px}.method-list{list-style:none;margin:0;padding:0}.method-list li{display:grid;grid-template-columns:22px 1fr;gap:8px;padding:7px 0;color:#626c78;font-size:10px;line-height:1.5;border-bottom:1px solid #f0f1f3}.method-list li:last-child{border:0}.method-num{color:var(--red);font-weight:800}
+.sensitivity{overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:7px;padding:14px 16px}.sensitivity table{min-width:600px;font-size:10px}.sensitivity th,.sensitivity td{text-align:center;padding:8px 10px;border-bottom:1px solid #f0f1f3}.sensitivity th:first-child,.sensitivity td:first-child{text-align:left;min-width:100px;background:#fafbfc}.sensitivity td.current{outline:2px solid var(--red);outline-offset:-2px;color:var(--red-dark);font-weight:800;background:var(--red-pale)}.sensitivity .cell{color:#48525d;font-variant-numeric:tabular-nums}.sensitivity .cell.up{color:#167553}.sensitivity .cell.down{color:#a9373b}
+.source-strip{margin-top:32px;padding-top:17px;border-top:1px solid #dfe3e8;display:flex;align-items:flex-start;justify-content:space-between;gap:20px}.source-title{color:#505a66;font-size:10px;font-weight:750;text-transform:uppercase;letter-spacing:.1em}.source-links{display:flex;flex-wrap:wrap;gap:9px 16px;margin-top:7px}.source-links a{color:#465667;font-size:10px;text-underline-offset:3px}.source-links a:hover{color:var(--red-dark)}.disclaimer{max-width:470px;color:#858e98;font-size:9px;line-height:1.5;text-align:right}
+@media(max-width:760px){main{padding-top:22px}.hero{grid-template-columns:1fr;gap:18px}.hero-valuation{max-width:440px}.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.viz-grid,.controls,.bridge-grid{grid-template-columns:1fr}.source-strip{display:block}.disclaimer{text-align:left;margin-top:13px}}
+@media(max-width:420px){.top-meta{font-size:10px;text-align:right}.kpi{padding:13px;min-height:92px}.kpi-value{font-size:19px}.section-head{align-items:flex-start;flex-direction:column}.scenario-row{width:100%}.scenario-button{flex:1;padding:0 8px}.plot{gap:4px}.plot-value{font-size:8px}.viz-panel{padding:15px 13px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="brand"><span class="brand-mark" aria-hidden="true"></span> MarketLens <span style="color:#788391;font-weight:500">/ Equity research</span></div><div class="top-meta">Independent DCF model · FY2025 actuals</div></div>
+<main>
+<div class="eyebrow"><span class="dot" aria-hidden="true"></span> Valuation dashboard <span>·</span> Updated with FY2025 reported results</div>
+<section class="hero" aria-labelledby="company-name">
+  <div><h1 id="company-name">Ferrari N.V.</h1><p class="subhead">A driver-based discounted cash flow view of Ferrari’s operating outlook. Explore how a different business case or valuation assumption changes estimated intrinsic value.</p><div class="company-tags"><span class="tag">NYSE: RACE</span><span class="tag">Reporting currency · EUR</span><span class="tag">Valuation date · 31 Dec 2025</span></div></div>
+  <div class="hero-valuation" aria-live="polite"><div class="label">Estimated value per share</div><div class="hero-price" id="share-value">€161.16 <small>/ share</small></div><div class="hero-context"><span>DCF estimate · not a live market quote</span><span class="case-label" id="case-badge">Base case</span></div></div>
+</section>
+<section class="kpi-grid" aria-label="Valuation summary">
+  <article class="kpi"><div class="kpi-label">Enterprise value <details class="tip"><summary aria-label="Explain enterprise value">i</summary><p>Present value of forecast operating cash flows plus the present value of terminal value, before subtracting net debt.</p></details></div><div class="kpi-value" id="enterprise-value">€30.2bn</div><div class="kpi-note">DCF value of the operating business</div></article>
+  <article class="kpi"><div class="kpi-label">Equity value <details class="tip"><summary aria-label="Explain equity value">i</summary><p>Enterprise value less total group net debt. Divide by diluted shares to estimate value per share.</p></details></div><div class="kpi-value" id="equity-value">€28.7bn</div><div class="kpi-note">After €1.42bn total group net debt</div></article>
+  <article class="kpi"><div class="kpi-label">Terminal value / EV <details class="tip"><summary aria-label="Explain terminal value share">i</summary><p>Share of enterprise value represented by cash flows after the explicit forecast. A larger share makes the estimate more sensitive to long-term assumptions.</p></details></div><div class="kpi-value" id="terminal-share">79.0%</div><div class="kpi-note">Long-run cash flow assumptions matter</div></article>
+  <article class="kpi"><div class="kpi-label">Weighted average cost of capital <details class="tip"><summary aria-label="Explain WACC">i</summary><p>Discount rate applied to unlevered free cash flow. This illustrative rate combines CAPM cost of equity with after-tax cost of debt.</p></details></div><div class="kpi-value" id="wacc-kpi">7.73%</div><div class="kpi-note">Current discount rate assumption</div></article>
+</section>
+<section class="section" aria-labelledby="forecast-heading">
+  <div class="section-head"><div><h2 class="section-title" id="forecast-heading">Operating outlook</h2><p class="section-subtitle">Choose a case to update the revenue and free cash flow forecasts.</p></div><div class="scenario-row" role="group" aria-label="Forecast scenario"><span>Forecast case</span><button type="button" class="scenario-button" data-case="Bear" aria-pressed="false">Bear</button><button type="button" class="scenario-button" data-case="Base" aria-pressed="true">Base</button><button type="button" class="scenario-button" data-case="Bull" aria-pressed="false">Bull</button></div></div>
+  <div class="viz-grid">
+    <article class="viz-panel"><h3 class="viz-title">Net revenue <span class="viz-unit">€bn</span></h3><div class="plot" id="revenue-chart" role="img" aria-label="Forecast revenue bar chart"></div><div class="plot-note"><span>Annual forecast</span><span>Historical filing; forecast assumptions below</span></div></article>
+    <article class="viz-panel"><h3 class="viz-title">Unlevered free cash flow <span class="viz-unit">€m</span></h3><div class="plot" id="fcff-chart" role="img" aria-label="Forecast free cash flow bar chart"></div><div class="plot-note"><span>Cash flow available to debt and equity holders</span><span>Five-year explicit forecast</span></div></article>
+  </div>
+</section>
+<section class="section" aria-labelledby="assumptions-heading">
+  <div class="section-head"><div><h2 class="section-title" id="assumptions-heading">Valuation assumptions</h2><p class="section-subtitle">Adjust the discount rate and perpetual growth assumption. All values recalculate instantly.</p></div></div>
+  <div class="controls">
+    <div class="control"><div class="control-top"><label class="control-label" for="wacc-slider">Weighted average cost of capital <details class="tip"><summary aria-label="More about WACC">i</summary><p>Higher WACC discounts future euros more heavily and generally lowers estimated value. The model’s reference cost of equity is 8.0%, with a 5% debt weighting.</p></details></label><output class="control-value" id="wacc-output" for="wacc-slider">7.73%</output></div><input id="wacc-slider" type="range" min="6" max="12" step="0.001" value="7.733" aria-label="WACC, percent"><div class="range-ends"><span>6.0%</span><span>12.0%</span></div></div>
+    <div class="control"><div class="control-top"><label class="control-label" for="growth-slider">Terminal growth rate <details class="tip"><summary aria-label="More about terminal growth">i</summary><p>Assumed perpetual annual growth after 2030. It must stay below WACC for the Gordon growth method to produce a valid terminal value.</p></details></label><output class="control-value" id="growth-output" for="growth-slider">2.50%</output></div><input id="growth-slider" type="range" min="1" max="4" step="0.1" value="2.5" aria-label="Terminal growth, percent"><div class="range-ends"><span>1.0%</span><span>4.0%</span></div></div>
+  </div>
+</section>
+<section class="section" aria-label="Model interpretation"><div class="interpretation"><div class="interpret-icon" aria-hidden="true">i</div><div><h3>What the model is indicating</h3><p id="interpretation-text" aria-live="polite">In the Base case, the model estimates €161.16 per share. About 79% of enterprise value comes from terminal value, so long-term assumptions meaningfully affect the result. This is a scenario-based valuation, not an investment recommendation.</p></div></div></section>
+<section class="section" aria-labelledby="forecast-table-heading">
+  <div class="section-head"><div><h2 class="section-title" id="forecast-table-heading">Forecast detail</h2><p class="section-subtitle">Reported history through 2025; model projections from 2026 to 2030. Amounts in € millions.</p></div></div>
+  <div class="table-wrap"><table aria-label="Ferrari historical and forecast financials"><thead id="forecast-head"></thead><tbody id="forecast-body"></tbody></table></div><p class="table-note">A dash indicates a metric not calculated for that historical year in this DCF. Swipe horizontally on a narrow screen to see every year.</p>
+</section>
+<section class="section" aria-labelledby="sensitivity-heading">
+  <div class="section-head"><div><h2 class="section-title" id="sensitivity-heading">Value sensitivity</h2><p class="section-subtitle">Estimated value per share across WACC and terminal growth combinations. Highlighted cell is the selected assumption.</p></div></div>
+  <div class="sensitivity" id="sensitivity-table" aria-live="polite"></div>
+</section>
+<section class="section" aria-labelledby="bridge-heading">
+  <div class="section-head"><div><h2 class="section-title" id="bridge-heading">How the valuation is built</h2><p class="section-subtitle">A simplified consolidated FCFF method.</p></div></div>
+  <div class="bridge-grid">
+    <div class="bridge" aria-label="DCF valuation bridge">
+      <div class="bridge-row"><span>Present value of 2026–2030 FCFF</span><strong id="pv-fcff">€6.33bn</strong></div><div class="bridge-row"><span>Present value of terminal value</span><strong id="pv-terminal">€23.82bn</strong></div><div class="bridge-row total"><span>Enterprise value</span><strong id="bridge-ev">€30.16bn</strong></div><div class="bridge-row"><span>Less: total group net debt</span><strong>€1.42bn</strong></div><div class="bridge-row total"><span>Equity value</span><strong id="bridge-equity">€28.74bn</strong></div><div class="bridge-row"><span>Diluted shares outstanding</span><strong>178.32m</strong></div><div class="bridge-row total"><span>Estimated value per share</span><strong id="bridge-share">€161.16</strong></div>
+    </div>
+    <div class="bridge"><ul class="method-list"><li><span class="method-num">01</span><span>Project revenue and EBIT using the selected operating case.</span></li><li><span class="method-num">02</span><span>Convert EBIT to cash flow: NOPAT + D&amp;A − CapEx − investment in operating working capital.</span></li><li><span class="method-num">03</span><span>Discount five years of FCFF at WACC and add a Gordon growth terminal value.</span></li><li><span class="method-num">04</span><span>Subtract total group net debt and divide by diluted weighted average shares.</span></li></ul></div>
+  </div>
+</section>
+<footer class="source-strip"><div><div class="source-title">Sources</div><div class="source-links"><a href="https://www.sec.gov/Archives/edgar/data/1648416/000164841626000024/race-20251231.htm" target="_blank" rel="noopener noreferrer">Ferrari FY2025 annual report</a><a href="https://www.sec.gov/Archives/edgar/data/1648416/000164841626000018/fnvfy2025results.htm" target="_blank" rel="noopener noreferrer">FY2025 results release</a><a href="https://www.sec.gov/Archives/edgar/data/1648416/000164841625000016/fnvfy2024resultspr.htm" target="_blank" rel="noopener noreferrer">FY2024 results release</a></div></div><div class="disclaimer">Independent educational model based on public filings; not affiliated with Ferrari N.V. Forecasts and discount-rate inputs are illustrative analyst assumptions. Simplified consolidated DCF; financial-services activity is not valued separately. Not investment advice.</div></footer>
+</main>
+<script>
+(function(){
+"use strict";
+const actuals={years:[2023,2024,2025],revenue:[5970,6677,7146],ebit:[1617,1888,2110],ebitda:[2279,2555,2772],margin:[1617/5970,1888/6677,2110/7146]};
+const cases={Base:{growth:[7500/7146-1,.07,.06,.05,.04],margin:[.295,.298,.30,.302,.302]},Bull:{growth:[.065,.085,.075,.065,.055],margin:[.30,.305,.31,.315,.32]},Bear:{growth:[0,.02,.02,.03,.03],margin:[.285,.28,.275,.275,.275]}};
+const D_A_REV=662/7146,CAPEX_REV=943/7146,NWC_PER_INCREMENTAL_REVENUE=.005,TAX=.24,NET_DEBT=1417,SHARES=178.321,YEARS=[2026,2027,2028,2029,2030];
+let selectedCase="Base";
+const waccSlider=document.getElementById("wacc-slider"),growthSlider=document.getElementById("growth-slider");
+const euro=function(n,d){return "€"+Number(n).toLocaleString("en-GB",{minimumFractionDigits:d,maximumFractionDigits:d})};
+const euroBn=function(n,d){return "€"+(n/1000).toLocaleString("en-GB",{minimumFractionDigits:d,maximumFractionDigits:d})+"bn"};
+const compactBn=function(n,d){return(n/1000).toLocaleString("en-GB",{minimumFractionDigits:d,maximumFractionDigits:d})};
+const pct=function(n,d){return(n*100).toLocaleString("en-GB",{minimumFractionDigits:d,maximumFractionDigits:d})+"%"};
+const integer=function(n){return Math.round(n).toLocaleString("en-GB")};
+function calculate(caseName,wacc,growthRate){
+ const assumption=cases[caseName];let previousRevenue=actuals.revenue[2];
+ const forecast=YEARS.map(function(year,i){
+  const revenue=previousRevenue*(1+assumption.growth[i]),ebit=revenue*assumption.margin[i],da=revenue*D_A_REV,capex=revenue*CAPEX_REV,nwc=(revenue-previousRevenue)*NWC_PER_INCREMENTAL_REVENUE,fcff=ebit*(1-TAX)+da-capex-nwc,pvFactor=1/Math.pow(1+wacc,i+1);
+  const row={year:year,revenue:revenue,growth:assumption.growth[i],margin:assumption.margin[i],ebit:ebit,tax:ebit*TAX,da:da,ebitda:ebit+da,capex:capex,nwc:nwc,fcff:fcff,pvFactor:pvFactor,pvFcff:fcff*pvFactor};
+  previousRevenue=revenue;return row;
+ });
+ const pvFcff=forecast.reduce(function(sum,row){return sum+row.pvFcff},0),terminalValue=forecast[4].fcff*(1+growthRate)/(wacc-growthRate),pvTerminal=terminalValue/Math.pow(1+wacc,5),ev=pvFcff+pvTerminal,equity=ev-NET_DEBT;
+ return{forecast:forecast,pvFcff:pvFcff,terminalValue:terminalValue,pvTerminal:pvTerminal,ev:ev,equity:equity,price:equity/SHARES,tvShare:pvTerminal/ev};
+}
+function renderBars(element,rows,field,maxValue,suffix,cash){
+ element.innerHTML=rows.map(function(row){
+  const value=row[field],height=Math.max(2,Math.min(100,value/maxValue*100)),display=suffix==="bn"?compactBn(value,1):integer(value);
+  return'<div class="plot-col"><div class="plot-value">'+display+'</div><div class="bar-area"><div class="plot-bar'+(cash?' cash':'')+'" style="height:'+height.toFixed(1)+'%" title="'+row.year+': '+display+(suffix==="bn"?' €bn':' €m')+'"></div></div><div class="plot-year">'+String(row.year).slice(2)+'E</div></div>';
+ }).join("");
+}
+function renderForecastTable(rows){
+ const allYears=actuals.years.concat(YEARS);
+ document.getElementById("forecast-head").innerHTML="<tr><th scope=\"col\">Metric</th>"+allYears.map(function(year,i){return'<th scope="col" class="'+(i>=3?"forecast-col":"")+'">'+year+(i<3?"A":"E")+"</th>"}).join("")+"</tr>";
+ const history=actuals.years.map(function(year,i){return{revenue:actuals.revenue[i],ebit:actuals.ebit[i],ebitda:actuals.ebitda[i],margin:actuals.margin[i]}});
+ const fm=function(v){return v==null?"—":integer(v)},fp=function(v){return v==null?"—":pct(v,1)};
+ const defs=[
+  ["Net revenue (€m)",history.map(function(x){return x.revenue}).concat(rows.map(function(x){return x.revenue})),fm],
+  ["Revenue growth",[null,actuals.revenue[1]/actuals.revenue[0]-1,actuals.revenue[2]/actuals.revenue[1]-1].concat(rows.map(function(x){return x.growth})),fp],
+  ["EBIT (€m)",history.map(function(x){return x.ebit}).concat(rows.map(function(x){return x.ebit})),fm],
+  ["EBIT margin",history.map(function(x){return x.margin}).concat(rows.map(function(x){return x.margin})),fp],
+  ["EBITDA (€m)",history.map(function(x){return x.ebitda}).concat(rows.map(function(x){return x.ebitda})),fm],
+  ["D&A (€m)",[null,null,662].concat(rows.map(function(x){return x.da})),fm],
+  ["Capital expenditure (€m)",[null,null,943].concat(rows.map(function(x){return x.capex})),fm],
+  ["Change in operating NWC (€m)",[null,null,null].concat(rows.map(function(x){return x.nwc})),fm],
+  ["Unlevered free cash flow (€m)",[null,null,null].concat(rows.map(function(x){return x.fcff})),fm]
+ ];
+ document.getElementById("forecast-body").innerHTML=defs.map(function(def){return"<tr><td>"+def[0]+"</td>"+def[1].map(function(v,i){return'<td class="'+(i>=3?"forecast-col":"")+'">'+def[2](v)+"</td>"}).join("")+"</tr>"}).join("");
+}
+function renderSensitivity(current,wacc,growthRate){
+ const offsets=[-.01,-.005,0,.005,.01],gOffsets=[-.005,-.0025,0,.0025,.005],rates=gOffsets.map(function(x){return growthRate+x});
+ const head="<thead><tr><th scope=\"col\">WACC ↓ / g →</th>"+rates.map(function(g,i){return'<th scope="col" class="'+(i===2?"current":"")+'">'+pct(g,2)+"</th>"}).join("")+"</tr></thead>";
+ const body="<tbody>"+offsets.map(function(offset,ri){const testWacc=wacc+offset;const cells=rates.map(function(g,ci){const value=calculate(selectedCase,testWacc,g).price,delta=value-current.price,dir=Math.abs(delta)<.005?"":(delta>0?"up":"down"),active=ri===2&&ci===2;return'<td class="cell '+dir+(active?" current":"")+'">'+euro(value,0)+"</td>"}).join("");return"<tr><th scope=\"row\">"+pct(testWacc,2)+"</th>"+cells+"</tr>"}).join("")+"</tbody>";
+ document.getElementById("sensitivity-table").innerHTML='<table aria-label="Estimated value per share sensitivity table">'+head+body+"</table>";
+}
+function render(){
+ const wacc=Number(waccSlider.value)/100,g=Number(growthSlider.value)/100,res=calculate(selectedCase,wacc,g);
+ document.getElementById("share-value").innerHTML=euro(res.price,2)+' <small>/ share</small>';
+ document.getElementById("case-badge").textContent=selectedCase+" case";
+ document.getElementById("enterprise-value").textContent=euroBn(res.ev,1);
+ document.getElementById("equity-value").textContent=euroBn(res.equity,1);
+ document.getElementById("terminal-share").textContent=pct(res.tvShare,1);
+ document.getElementById("wacc-kpi").textContent=pct(wacc,2);
+ document.getElementById("wacc-output").textContent=pct(wacc,2);
+ document.getElementById("growth-output").textContent=pct(g,2);
+ document.getElementById("pv-fcff").textContent=euroBn(res.pvFcff,2);
+ document.getElementById("pv-terminal").textContent=euroBn(res.pvTerminal,2);
+ document.getElementById("bridge-ev").textContent=euroBn(res.ev,2);
+ document.getElementById("bridge-equity").textContent=euroBn(res.equity,2);
+ document.getElementById("bridge-share").textContent=euro(res.price,2);
+ renderBars(document.getElementById("revenue-chart"),res.forecast,"revenue",10000,"bn",false);
+ renderBars(document.getElementById("fcff-chart"),res.forecast,"fcff",2000,"m",true);
+ renderForecastTable(res.forecast);renderSensitivity(res,wacc,g);
+ document.getElementById("interpretation-text").textContent="In the "+selectedCase+" case, the model estimates "+euro(res.price,2)+" per share, with 2030 revenue of "+euroBn(res.forecast[4].revenue,2)+" and 2030 EBIT margin of "+pct(res.forecast[4].margin,1)+". About "+pct(res.tvShare,1)+" of enterprise value comes from terminal value, so long-term assumptions meaningfully affect the estimate. This is a scenario-based valuation, not an investment recommendation.";
+}
+document.querySelectorAll(".scenario-button").forEach(function(button){button.addEventListener("click",function(){selectedCase=button.getAttribute("data-case");document.querySelectorAll(".scenario-button").forEach(function(item){item.setAttribute("aria-pressed",item===button?"true":"false")});render()})});
+waccSlider.addEventListener("input",render);growthSlider.addEventListener("input",render);render();
+}());
+</script>
+</body>
+</html>
+
+
+
