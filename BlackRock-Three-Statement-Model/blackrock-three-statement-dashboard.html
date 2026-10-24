@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10253d">
+<meta name="description" content="Interactive BlackRock integrated three-statement forecast model with editable assumptions and linked financial statements.">
+<title>BlackRock | Integrated Three-Statement Model</title>
+<style>
+:root{--navy:#10253d;--navy2:#173858;--teal:#20b89a;--teal2:#dff5ee;--ink:#1d2b39;--muted:#647486;--line:#dce4eb;--canvas:#f3f6f9;--white:#fff;--amber:#b76e00;--amberbg:#fff5df;--green:#137a5b;--red:#a83f40;--shadow:0 12px 30px rgba(16,37,61,.08);font-family:Inter,"Segoe UI",Arial,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--canvas);color:var(--ink);font-size:14px;line-height:1.5}
+button,input{font:inherit}button{cursor:pointer}
+.shell{max-width:1440px;margin:0 auto;padding:22px 28px 44px}
+header{display:flex;align-items:center;justify-content:space-between;gap:22px;margin-bottom:22px}
+.brand{display:flex;gap:13px;align-items:center}.brand-mark{width:44px;height:44px;display:grid;place-items:center;border-radius:13px;color:var(--white);background:linear-gradient(145deg,var(--navy2),#0c2035);font-weight:800;letter-spacing:-.06em;box-shadow:var(--shadow)}
+.brand-title{font-size:17px;font-weight:750;color:var(--navy);letter-spacing:-.02em}.brand-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.header-right{display:flex;align-items:center;gap:10px}.pill{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border:1px solid var(--line);border-radius:99px;background:var(--white);font-size:11px;font-weight:700;color:var(--navy)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--teal)}
+.export-link{color:var(--navy);text-decoration:none;border:1px solid var(--line);padding:8px 12px;border-radius:9px;background:var(--white);font-weight:650}
+.tabs{display:flex;gap:5px;padding:5px;background:#e8eef4;border-radius:12px;width:max-content;margin-bottom:18px;max-width:100%;overflow:auto}
+.tab-btn,.sub-btn{border:0;background:transparent;color:#5d6e7e;border-radius:8px;padding:9px 14px;font-weight:700;white-space:nowrap}
+.tab-btn.active,.sub-btn.active{background:var(--white);color:var(--navy);box-shadow:0 2px 7px rgba(16,37,61,.10)}
+.view{display:none}.view.active{display:block}
+.hero{background:linear-gradient(118deg,#10253d 0%,#193e5b 74%,#155e62 130%);border-radius:18px;color:var(--white);padding:25px 27px;margin-bottom:17px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:340px;height:340px;border-radius:50%;border:1px solid rgba(255,255,255,.10);right:-100px;top:-190px;box-shadow:0 0 0 35px rgba(255,255,255,.025),0 0 0 72px rgba(255,255,255,.018)}
+.hero-content{position:relative;z-index:1;max-width:900px}.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:10px;font-weight:800;color:#9de8d6;margin-bottom:8px}
+h1{font-size:clamp(24px,3vw,34px);line-height:1.16;letter-spacing:-.045em;margin:0 0 8px}
+.hero p{color:#d8e4ed;max-width:760px;margin:0}.hero-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:17px}.hero-meta span{border:1px solid rgba(255,255,255,.21);background:rgba(255,255,255,.07);border-radius:7px;padding:5px 9px;font-size:11px;color:#e9f1f6}
+.kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-bottom:16px}.card,.panel{background:var(--white);border:1px solid var(--line);border-radius:14px;box-shadow:0 4px 14px rgba(16,37,61,.035)}
+.kpi{padding:15px 16px;min-height:112px}.kpi-label{color:var(--muted);font-size:11px;font-weight:700}.kpi-value{color:var(--navy);font-size:24px;font-weight:770;letter-spacing:-.04em;margin-top:10px;line-height:1.1}.kpi-foot{font-size:10px;color:var(--muted);margin-top:8px}
+.grid-2{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(320px,.8fr);gap:15px;margin-bottom:15px}
+.panel{padding:18px 19px}.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:12px}.panel-title{font-size:14px;font-weight:760;color:var(--navy);letter-spacing:-.015em}.panel-note{font-size:11px;color:var(--muted);margin-top:3px}.section-tag{font-size:10px;font-weight:700;color:var(--muted);background:#f1f5f8;padding:5px 8px;border-radius:6px;white-space:nowrap}
+.chart-wrap{width:100%;min-height:260px}.chart-wrap svg{width:100%;height:auto;display:block}.legend{display:flex;gap:15px;flex-wrap:wrap;margin-top:8px;font-size:10px;color:var(--muted)}.legend span{display:inline-flex;gap:6px;align-items:center}.legend i{width:9px;height:9px;border-radius:50%}
+.snapshot{width:100%;border-collapse:collapse;font-size:12px}.snapshot th{text-align:left;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.05em;padding:8px 7px;border-bottom:1px solid var(--line)}.snapshot td{padding:9px 7px;border-bottom:1px solid #edf1f4}.snapshot td:not(:first-child),.snapshot th:not(:first-child){text-align:right}.snapshot tr:last-child td{border-bottom:0}.snapshot .highlight td{font-weight:750;color:var(--navy)}
+.check-banner{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:10px;background:var(--teal2);color:var(--green);font-weight:750}.check-banner.fail{background:#fbe7e6;color:var(--red)}.check-banner small{font-weight:500;color:inherit;opacity:.85}
+.callout{padding:14px 15px;border-left:3px solid #e5ae54;background:var(--amberbg);border-radius:8px;color:#6d531d;font-size:11px;margin-top:13px}
+.view-title{margin:5px 0 16px;color:var(--navy);font-size:24px;letter-spacing:-.035em}.view-lede{color:var(--muted);margin:-9px 0 19px;font-size:12px}
+.assumption-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.assumption-toolbar p{margin:0;color:var(--muted);font-size:11px}
+.reset-btn{border:1px solid var(--line);background:var(--white);color:var(--navy);padding:8px 11px;border-radius:8px;font-weight:700}
+.assumption-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.assumption-card{padding:16px}.assumption-card h3{margin:0 0 3px;font-size:13px;color:var(--navy)}.assumption-card>p{margin:0 0 12px;font-size:10px;color:var(--muted)}
+.field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 13px}.field{display:flex;flex-direction:column;gap:4px}.field span{font-size:10px;color:#536476;font-weight:650}.field-control{display:flex;align-items:center;border:1px solid #d8e1e8;border-radius:7px;background:#fbfcfd;overflow:hidden}.field-control:focus-within{border-color:var(--teal);box-shadow:0 0 0 3px rgba(32,184,154,.12)}.field input{min-width:0;width:100%;border:0;background:transparent;padding:7px 9px;color:var(--navy);font-weight:700;outline:none}.field em{font-style:normal;color:var(--muted);font-size:9px;padding:0 8px;white-space:nowrap}
+.statement-tabs{display:flex;gap:4px;overflow:auto;margin-bottom:12px;padding-bottom:2px}.sub-btn{border:1px solid transparent;padding:8px 11px}.sub-btn.active{border-color:var(--line)}
+.table-panel{padding:0;overflow:hidden}.table-top{padding:15px 17px 0}.table-scroll{overflow:auto;max-height:70vh;border-radius:0 0 14px 14px}.statement-table{width:100%;min-width:1000px;border-collapse:separate;border-spacing:0;font-size:11px}.statement-table thead th{position:sticky;top:0;z-index:3;background:#edf3f7;color:var(--navy);padding:10px 11px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}.statement-table thead th:first-child{left:0;z-index:4;text-align:left;min-width:285px}.statement-table tbody td{padding:8px 11px;border-bottom:1px solid #edf1f4;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}.statement-table tbody td:first-child{position:sticky;left:0;background:var(--white);text-align:left;z-index:1;min-width:285px}.statement-table tr.section-row td{position:static;background:#173858;color:white;font-weight:750;text-align:left;padding:8px 11px;letter-spacing:.01em}.statement-table tr.total-row td{font-weight:750;color:var(--navy);background:#f7fafc}.statement-table tr.check-row td{color:var(--green);font-weight:700}.statement-table .indent{padding-left:26px;color:#526475}
+.model-check-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.check-item{padding:12px;border:1px solid var(--line);border-radius:10px}.check-name{font-size:10px;color:var(--muted);font-weight:700}.check-value{font-size:17px;color:var(--green);font-weight:800;margin-top:6px}.check-value.fail{color:var(--red)}
+.source-list{display:grid;gap:10px}.source-card{padding:14px 15px;border:1px solid var(--line);border-radius:10px}.source-card h3{margin:0 0 5px;color:var(--navy);font-size:12px}.source-card p{font-size:11px;color:var(--muted);margin:0 0 8px}.source-card a{color:#176d94;font-size:10px;word-break:break-all}
+.method-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:13px}.method-item{background:#f7fafc;border-radius:9px;padding:12px;font-size:10px;color:#586a7a}.method-item strong{display:block;color:var(--navy);font-size:11px;margin-bottom:3px}
+.footer{display:flex;justify-content:space-between;gap:12px;color:#7a8794;font-size:10px;margin-top:22px;padding:12px 2px;border-top:1px solid var(--line)}
+@media(max-width:1100px){.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.grid-2{grid-template-columns:1fr}.chart-wrap{min-height:220px}}
+@media(max-width:700px){.shell{padding:15px 12px 30px}header{align-items:flex-start}.brand-title{font-size:14px}.brand-sub{font-size:10px}.header-right .pill{display:none}.hero{padding:20px 18px;border-radius:14px}.kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.kpi{padding:12px;min-height:96px}.kpi-value{font-size:21px}.panel{padding:14px}.assumption-grid{grid-template-columns:1fr}.model-check-grid{grid-template-columns:1fr 1fr}.method-list{grid-template-columns:1fr}.tab-btn{padding:8px 10px;font-size:11px}.footer{flex-direction:column}.statement-table{min-width:900px}}
+@media(max-width:420px){.brand-mark{width:37px;height:37px}.brand-title{font-size:12px}.header-right .export-link{font-size:10px;padding:7px 8px}.kpi-value{font-size:18px}.model-check-grid{grid-template-columns:1fr}.field-grid{grid-template-columns:1fr}.snapshot{font-size:11px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header>
+  <div class="brand"><div class="brand-mark">BLK</div><div><div class="brand-title">BlackRock | Integrated Forecast</div><div class="brand-sub">Interactive three-statement model</div></div></div>
+  <div class="header-right"><span class="pill"><i class="dot"></i> FY2025 audited base</span><a class="export-link" href="#sources" id="sourceShortcut">Sources &amp; method</a></div>
+</header>
+<nav class="tabs" aria-label="Model views">
+  <button class="tab-btn active" data-view="overview">Overview</button>
+  <button class="tab-btn" data-view="assumptions">Assumptions</button>
+  <button class="tab-btn" data-view="statements">Three statements</button>
+  <button class="tab-btn" data-view="sources">Checks &amp; sources</button>
+</nav>
+
+<section class="view active" id="view-overview">
+  <div class="hero"><div class="hero-content"><div class="eyebrow">Financial planning &amp; analysis · Asset management</div><h1>BlackRock, Inc.<br>Integrated Three-Statement Forecast</h1><p>Explore how revenue, operating costs, investment activity, debt and capital returns flow through the income statement, balance sheet and cash flow statement.</p><div class="hero-meta"><span>FY2023–FY2025 audited actuals</span><span>FY2026–FY2030 forecast</span><span>USD millions, except per-share data</span><span>Editable base-case drivers</span></div></div></div>
+  <div class="kpis" id="kpis"></div>
+  <div class="grid-2">
+    <article class="panel"><div class="panel-head"><div><div class="panel-title">Revenue and earnings trend</div><div class="panel-note">Reported history followed by the editable base forecast</div></div><span class="section-tag">USD mm</span></div><div class="chart-wrap" id="trendChart"></div><div class="legend" id="chartLegend"></div></article>
+    <article class="panel"><div class="panel-head"><div><div class="panel-title">Forecast snapshot</div><div class="panel-note">Selected annual outputs from the linked model</div></div><span class="section-tag">2025A → 2030E</span></div><div id="snapshot"></div><div class="callout">The forecast is an illustrative portfolio-model exercise, not BlackRock management guidance. Change drivers under <strong>Assumptions</strong> to update the statements and checks.</div></article>
+  </div>
+  <article class="panel"><div class="panel-head"><div><div class="panel-title">Model integrity</div><div class="panel-note">Reconciliations refresh whenever a forecast input changes</div></div></div><div id="statusBanner" class="check-banner"></div></article>
+</section>
+
+<section class="view" id="view-assumptions">
+  <h2 class="view-title">Forecast assumptions</h2><p class="view-lede">Each annual driver applies to FY2026–FY2030. Values are editable; use “Reset base case” to restore the starting assumptions.</p>
+  <div class="assumption-toolbar"><p>Percent fields accept percentage points, for example enter <strong>7</strong> for 7.0%. Dollar fields are USD millions.</p><button class="reset-btn" id="resetBtn" type="button">Reset base case</button></div>
+  <div class="assumption-grid" id="assumptionGrid"></div>
+</section>
+
+<section class="view" id="view-statements">
+  <h2 class="view-title">Three linked statements</h2><p class="view-lede">Historical actuals come from SEC filings. Forecast formulas connect earnings, working capital, investing, financing and ending cash.</p>
+  <div class="statement-tabs" role="tablist" aria-label="Financial statements">
+    <button class="sub-btn active" data-statement="income">Income statement</button><button class="sub-btn" data-statement="balance">Balance sheet</button><button class="sub-btn" data-statement="cash">Cash flow</button>
+  </div>
+  <article class="panel table-panel"><div class="table-top"><div class="panel-head"><div><div class="panel-title" id="statementTitle">Income statement</div><div class="panel-note" id="statementNote">USD mm, except diluted shares and EPS</div></div><span class="section-tag">Actuals + forecast</span></div></div><div class="table-scroll" id="statementTable" tabindex="0" aria-label="Scrollable financial statement table"></div></article>
+</section>
+
+<section class="view" id="view-sources">
+  <h2 class="view-title">Checks, sources &amp; scope</h2><p class="view-lede">The model ties across all years. The notes below explain key simplifications and the source filings behind historical actuals.</p>
+  <article class="panel" style="margin-bottom:14px"><div class="panel-head"><div><div class="panel-title">Reconciliation checks</div><div class="panel-note">A passing model shows differences of zero within USD 0.01 million tolerance</div></div><span class="section-tag">Live checks</span></div><div class="model-check-grid" id="checksGrid"></div></article>
+  <article class="panel" style="margin-bottom:14px"><div class="panel-head"><div><div class="panel-title">Primary sources</div><div class="panel-note">Historical statement lines are transcribed from the filings listed here</div></div></div><div class="source-list">
+    <div class="source-card"><h3>BlackRock 2025 Form 10-K</h3><p>FY2023–FY2025 consolidated income statement and cash flows; FY2024–FY2025 balance sheets. PDF statement pages F-5 through F-8.</p><a href="https://www.sec.gov/Archives/edgar/data/2012383/000130817926000264/blk015204-arsa.pdf" target="_blank" rel="noopener">Open SEC filing</a></div>
+    <div class="source-card"><h3>BlackRock 2024 Form 10-K</h3><p>FY2023 comparative balance sheet and permanent-equity detail. PDF pages F-6 and F-9.</p><a href="https://www.sec.gov/Archives/edgar/data/2012383/000119312525073384/d865271dars.pdf" target="_blank" rel="noopener">Open SEC filing</a></div>
+  </div></article>
+  <article class="panel"><div class="panel-head"><div><div class="panel-title">Model scope</div><div class="panel-note">A transparent base case that can be stress-tested from the assumptions panel</div></div></div><div class="method-list">
+    <div class="method-item"><strong>Client assets</strong>Separate-account assets and securities-lending collateral are paired with equal liabilities. Forecast changes in these balances do not create company cash.</div>
+    <div class="method-item"><strong>Cash and restricted cash</strong>Cash flow ending cash includes restricted cash. The base case holds restricted cash at USD 22 million inside other assets.</div>
+    <div class="method-item"><strong>Noncontrolling interests</strong>CIPs and Subco earnings are assumed fully distributed in the year earned, leaving redeemable NCI balances flat.</div>
+    <div class="method-item"><strong>Interest and debt</strong>Interest uses opening cash, investments and debt to avoid circular references. Debt issuance and repayments are editable.</div>
+    <div class="method-item"><strong>Capital spending</strong>PP&amp;E rolls forward with capex less depreciation; intangible assets roll forward with amortization. No future acquisitions or impairments are assumed.</div>
+    <div class="method-item"><strong>Historical basis</strong>FY2025 actuals include acquisition activity. Forecast years assume no acquisitions, no FX impact, no investment gains and no fund consolidation cash flows.</div>
+  </div></article>
+</section>
+
+<footer class="footer"><span>BlackRock three-statement forecast · Portfolio project</span><span>Educational model only; not investment advice or a recommendation to buy or sell securities.</span></footer>
+</div>
+<script>
+"use strict";
+const YEARS=["2023A","2024A","2025A","2026E","2027E","2028E","2029E","2030E"];
+const HIST={
+ is:{advisory:[13724,15485,18474],securities:[675,615,705],performance:[554,1207,1424],technology:[1485,1603,1981],distribution:[1262,1273,1355],other:[159,224,277],employee:[5779,6546,8446],distServicing:[2051,2171,2460],directFund:[1331,1464,1767],subadvisory:[116,140,233],ga:[2092,2257,2731],contingentExpense:[3,-36,720],restructuring:[61,0,39],amortization:[151,291,775],investmentGain:[699,492,634],interestIncome:[473,767,554],interestExpense:[-292,-538,-614],tax:[1479,1783,1677],nciCips:[174,143,262],nciSubco:[0,0,127],dilutedShares:[150.7,151.6,160.9],eps:[36.51,42.01,35.31]},
+ bs:{cash:[8736,12762,11468],ar:[3916,4304,5158],investments:[9740,9769,13271],separateAssets:[56098,52811,60098],collateralAssets:[4558,6059,7922],ppe:[1112,1103,1256],intangibles:[18258,20743,27968],goodwill:[15524,25949,35283],rouAssets:[1421,1519,1874],otherAssets:[3848,3596,5700],accruedComp:[2393,2964,3830],ap:[1240,1536,1740],debt:[7918,12314,12768],separateLiabs:[56098,52811,60098],collateralLiabs:[4558,6059,7922],contingentLiabs:[99,4302,8429],deferredTaxLiabs:[3506,3334,4618],leaseLiabs:[1784,1908,2228],otherLiabs:[4375,4032,6823],nciCipsTemp:[1740,1691,2636],nciSubcoTemp:[0,0,2791],parentEquity:[39347,47495,55888],nciPermanent:[153,169,227]},
+ cf:{da:[427,529,1126],impairment:[0,50,0],leaseExpense:[140,129,148],sbc:[630,753,1307],deferredTax:[124,-106,-631],charitable:[0,0,109],contingentFV:[3,-36,720],otherInvestmentGain:[0,-126,-289],cipGain:[-380,-269,-480],cipActivity:[-1780,-2672,-4214],equityMethodEarnings:[-378,-41,-51],equityMethodDistribution:[49,57,429],arChange:[-586,-443,-619],investmentTrading:[72,58,193],otherAssetChange:[-326,317,-722],accruedCompChange:[145,367,659],apChange:[-26,259,75],otherLiabChange:[375,-382,225],investmentPurchases:[-846,-818,-1384],investmentSaleProceeds:[400,766,544],equityCapitalDistribution:[46,366,390],fundConsolidations:[-26,-127,-97],acquisitions:[-189,-2936,-3496],capex:[-344,-255,-375],debtRepayment:[0,-1000,-796],debtIssuance:[1238,5474,1080],dividends:[-3035,-3101,-3347],optionProceeds:[95,464,167],shareRepurchases:[-1884,-1930,-1951],cipBorrowing:[-59,-58,-112],nciCashFlow:[1627,2405,3827],otherFinancing:[26,-18,5],fx:[106,-162,329],beginningCash:[7433,8753,12779],endingCash:[8753,12779,11490],restrictedCash:[17,17,22]}
+};
+const BASE={
+ advisoryGrowth:.07,securitiesGrowth:.05,performanceGrowth:.04,technologyGrowth:.10,distributionGrowth:.05,otherGrowth:.05,
+ employeeRatio:.35,distServicingRatio:.102,directFundRatio:.073,subadvisoryRatio:.01,gaRatio:.11,amortGrowth:.05,
+ taxRate:.22,cashYield:.035,debtRate:.045,depreciationRate:.25,capexRatio:.018,sbcRatio:.05,dividendPayout:.55,buybackRatio:.07,
+ optionProceeds:175,debtIssuance:0,debtRepayment:500,investmentPurchaseRatio:.03,investmentSaleRatio:.05,
+ separateAccountGrowth:.05,collateralGrowth:.05,arRatio:.21,otherAssetsRatio:.235,accruedCompRatio:.158,apRatio:.072,otherLiabsRatio:.282,
+ rouGrowth:0,leaseGrowth:0,nciCipsRatio:.045,nciSubcoRatio:.02,dilutedShareGrowth:.003,restrictedCash:22,goodwillGrowth:0,contingentLiabGrowth:0,deferredTaxLiabGrowth:0
+};
+let assumptions=Object.assign({},BASE);
+const groups=[
+ {title:"Revenue growth",note:"Annual growth for each revenue stream",fields:[["advisoryGrowth","Advisory & administration fees","%"],["securitiesGrowth","Securities lending","%"],["performanceGrowth","Performance fees","%"],["technologyGrowth","Technology subscriptions","%"],["distributionGrowth","Distribution fees","%"],["otherGrowth","Advisory and other revenue","%"]]},
+ {title:"Operating costs and tax",note:"Cost ratios are applied to total revenue",fields:[["employeeRatio","Employee compensation / revenue","%"],["distServicingRatio","Distribution & servicing / revenue","%"],["directFundRatio","Direct fund expense / revenue","%"],["subadvisoryRatio","Sub-advisory / revenue","%"],["gaRatio","General & administration / revenue","%"],["amortGrowth","Intangible amortization growth","%"],["taxRate","Effective tax rate","%"]]},
+ {title:"Interest and capital spending",note:"Interest uses opening balances; capex and depreciation roll through PP&E",fields:[["cashYield","Interest income yield","%"],["debtRate","Debt interest rate","%"],["depreciationRate","Depreciation / opening PP&E","%"],["capexRatio","Capital expenditures / revenue","%"],["sbcRatio","Stock-based compensation / revenue","%"]]},
+ {title:"Capital allocation",note:"Cash distributions and repurchases link to parent earnings or revenue",fields:[["dividendPayout","Dividends / parent net income","%"],["buybackRatio","Share repurchases / revenue","%"],["optionProceeds","Option proceeds","USD mm"],["debtIssuance","New debt issued","USD mm"],["debtRepayment","Debt repayment","USD mm"]]},
+ {title:"Investments and client balances",note:"Paired client assets and liabilities have no direct cash impact",fields:[["investmentPurchaseRatio","Investment purchases / revenue","%"],["investmentSaleRatio","Investment sales / opening investments","%"],["separateAccountGrowth","Separate account assets","%"],["collateralGrowth","Securities-lending collateral","%"],["rouGrowth","Lease right-of-use assets","%"],["leaseGrowth","Operating lease liabilities","%"]]},
+ {title:"Working capital, equity and other balances",note:"Revenue-based ratios and NCI shares drive the remaining forecast balances",fields:[["arRatio","Accounts receivable / revenue","%"],["otherAssetsRatio","Other assets / revenue","%"],["accruedCompRatio","Accrued compensation / revenue","%"],["apRatio","Accounts payable / revenue","%"],["otherLiabsRatio","Other liabilities / revenue","%"],["nciCipsRatio","NCI - CIPs / net income","%"],["nciSubcoRatio","NCI - Subco / net income","%"],["dilutedShareGrowth","Diluted share count growth","%"],["restrictedCash","Restricted cash","USD mm"],["goodwillGrowth","Goodwill growth","%"],["contingentLiabGrowth","Contingent consideration liability growth","%"],["deferredTaxLiabGrowth","Deferred tax liability growth","%"]]}
+];
+function clone(x){return JSON.parse(JSON.stringify(x))}
+function add(obj,key,value){if(!obj[key])obj[key]=[];obj[key].push(value)}
+function sum(a){return a.reduce((x,y)=>x+y,0)}
+function runModel(a){
+ const m={years:YEARS.slice(),is:{},bs:{},cf:{}};
+ for(const [k,v] of Object.entries(HIST.is))m.is[k]=v.slice();
+ for(const [k,v] of Object.entries(HIST.bs))m.bs[k]=v.slice();
+ for(const [k,v] of Object.entries(HIST.cf))m.cf[k]=v.slice();
+ const I=m.is,B=m.bs,F=m.cf;
+ for(let i=0;i<3;i++){
+  add(I,"advisorySecurities",I.advisory[i]+I.securities[i]);
+  add(I,"totalRevenue",I.advisory[i]+I.securities[i]+I.performance[i]+I.technology[i]+I.distribution[i]+I.other[i]);
+  add(I,"salesExpense",I.distServicing[i]+I.directFund[i]+I.subadvisory[i]);
+  add(I,"totalExpense",I.employee[i]+I.salesExpense[i]+I.ga[i]+I.contingentExpense[i]+I.restructuring[i]+I.amortization[i]);
+  add(I,"operatingIncome",I.totalRevenue[i]-I.totalExpense[i]);
+  add(I,"nonOperating",I.investmentGain[i]+I.interestIncome[i]+I.interestExpense[i]);
+  add(I,"pretax",I.operatingIncome[i]+I.nonOperating[i]);
+  add(I,"netIncome",I.pretax[i]-I.tax[i]);
+  add(I,"parentIncome",I.netIncome[i]-I.nciCips[i]-I.nciSubco[i]);
+  add(I,"operatingMargin",I.operatingIncome[i]/I.totalRevenue[i]);
+  add(B,"totalAssets",sum([B.cash[i],B.ar[i],B.investments[i],B.separateAssets[i],B.collateralAssets[i],B.ppe[i],B.intangibles[i],B.goodwill[i],B.rouAssets[i],B.otherAssets[i]]));
+  add(B,"totalLiabs",sum([B.accruedComp[i],B.ap[i],B.debt[i],B.separateLiabs[i],B.collateralLiabs[i],B.contingentLiabs[i],B.deferredTaxLiabs[i],B.leaseLiabs[i],B.otherLiabs[i]]));
+  add(B,"totalTempEquity",B.nciCipsTemp[i]+B.nciSubcoTemp[i]);
+  add(B,"totalPermanentEquity",B.parentEquity[i]+B.nciPermanent[i]);
+  add(B,"totalEquity",B.totalTempEquity[i]+B.totalPermanentEquity[i]);
+  add(B,"balanceCheck",Math.round((B.totalAssets[i]-B.totalLiabs[i]-B.totalEquity[i])*100)/100);
+  const cfOperating=sum([F.da[i],F.impairment[i],F.leaseExpense[i],F.sbc[i],F.deferredTax[i],F.charitable[i],F.contingentFV[i],F.otherInvestmentGain[i],F.cipGain[i],F.cipActivity[i],F.equityMethodEarnings[i],F.equityMethodDistribution[i],F.arChange[i],F.investmentTrading[i],F.otherAssetChange[i],F.accruedCompChange[i],F.apChange[i],F.otherLiabChange[i]]);
+  add(F,"netIncome",I.netIncome[i]);add(F,"cfo",F.netIncome[i]+cfOperating);
+  add(F,"cfi",sum([F.investmentPurchases[i],F.investmentSaleProceeds[i],F.equityCapitalDistribution[i],F.fundConsolidations[i],F.acquisitions[i],F.capex[i]]));
+  add(F,"cff",sum([F.debtRepayment[i],F.debtIssuance[i],F.dividends[i],F.optionProceeds[i],F.shareRepurchases[i],F.cipBorrowing[i],F.nciCashFlow[i],F.otherFinancing[i]]));
+  add(F,"netCashChange",F.cfo[i]+F.cfi[i]+F.cff[i]+F.fx[i]);
+  add(F,"cashCheck",Math.round((F.endingCash[i]-B.cash[i]-F.restrictedCash[i])*100)/100);
+  add(F,"cfoFiledCheck",F.cfo[i]-[4165,4956,3927][i]);
+  add(F,"cfiFiledCheck",F.cfi[i]-[-959,-3004,-4418][i]);
+  add(F,"cffFiledCheck",F.cff[i]-[-1992,2236,-1127][i]);
+  add(F,"nciCheck",I.netIncome[i]-I.nciCips[i]-I.nciSubco[i]-I.parentIncome[i]);
+  add(F,"equityCheck",null);add(F,"tempCheck",null);
+ }
+ const growthMap=[["advisory","advisoryGrowth"],["securities","securitiesGrowth"],["performance","performanceGrowth"],["technology","technologyGrowth"],["distribution","distributionGrowth"],["other","otherGrowth"]];
+ for(let j=0;j<5;j++){
+  const p=j+2,n=j+3;
+  for(const [line,assump] of growthMap)add(I,line,I[line][p]*(1+a[assump]));
+  const rev=I.advisory[n]+I.securities[n]+I.performance[n]+I.technology[n]+I.distribution[n]+I.other[n];add(I,"advisorySecurities",I.advisory[n]+I.securities[n]);add(I,"totalRevenue",rev);
+  add(I,"employee",rev*a.employeeRatio);add(I,"distServicing",rev*a.distServicingRatio);add(I,"directFund",rev*a.directFundRatio);add(I,"subadvisory",rev*a.subadvisoryRatio);add(I,"salesExpense",I.distServicing[n]+I.directFund[n]+I.subadvisory[n]);add(I,"ga",rev*a.gaRatio);
+  add(I,"contingentExpense",0);add(I,"restructuring",0);add(I,"amortization",I.amortization[p]*(1+a.amortGrowth));
+  add(I,"totalExpense",I.employee[n]+I.salesExpense[n]+I.ga[n]+I.contingentExpense[n]+I.restructuring[n]+I.amortization[n]);add(I,"operatingIncome",rev-I.totalExpense[n]);add(I,"investmentGain",0);
+  add(I,"interestIncome",(B.cash[p]+B.investments[p])*a.cashYield);add(I,"interestExpense",-B.debt[p]*a.debtRate);add(I,"nonOperating",I.investmentGain[n]+I.interestIncome[n]+I.interestExpense[n]);
+  add(I,"pretax",I.operatingIncome[n]+I.nonOperating[n]);add(I,"tax",I.pretax[n]*a.taxRate);add(I,"netIncome",I.pretax[n]-I.tax[n]);add(I,"nciCips",I.netIncome[n]*a.nciCipsRatio);add(I,"nciSubco",I.netIncome[n]*a.nciSubcoRatio);add(I,"parentIncome",I.netIncome[n]-I.nciCips[n]-I.nciSubco[n]);add(I,"dilutedShares",I.dilutedShares[p]*(1+a.dilutedShareGrowth));add(I,"eps",(I.parentIncome[n]+I.nciSubco[n])/I.dilutedShares[n]);add(I,"operatingMargin",I.operatingIncome[n]/rev);
+  add(B,"ar",rev*a.arRatio);add(B,"investments",B.investments[p]);add(B,"separateAssets",B.separateAssets[p]*(1+a.separateAccountGrowth));add(B,"collateralAssets",B.collateralAssets[p]*(1+a.collateralGrowth));
+  const dep=B.ppe[p]*a.depreciationRate,capex=-rev*a.capexRatio;add(B,"ppe",B.ppe[p]-capex-dep);add(B,"intangibles",B.intangibles[p]-I.amortization[n]);add(B,"goodwill",B.goodwill[p]*(1+a.goodwillGrowth));add(B,"rouAssets",B.rouAssets[p]*(1+a.rouGrowth));add(B,"otherAssets",rev*a.otherAssetsRatio);
+  add(B,"accruedComp",rev*a.accruedCompRatio);add(B,"ap",rev*a.apRatio);add(B,"debt",B.debt[p]-a.debtRepayment+a.debtIssuance);add(B,"separateLiabs",B.separateAssets[n]);add(B,"collateralLiabs",B.collateralAssets[n]);add(B,"contingentLiabs",B.contingentLiabs[p]*(1+a.contingentLiabGrowth));add(B,"deferredTaxLiabs",B.deferredTaxLiabs[p]*(1+a.deferredTaxLiabGrowth));add(B,"leaseLiabs",B.leaseLiabs[p]*(1+a.leaseGrowth));add(B,"otherLiabs",rev*a.otherLiabsRatio);
+  add(B,"nciCipsTemp",B.nciCipsTemp[p]);add(B,"nciSubcoTemp",B.nciSubcoTemp[p]);
+  add(F,"netIncome",I.netIncome[n]);add(F,"da",dep+I.amortization[n]);add(F,"impairment",0);add(F,"leaseExpense",0);add(F,"sbc",rev*a.sbcRatio);add(F,"deferredTax",0);add(F,"charitable",0);add(F,"contingentFV",I.contingentExpense[n]);add(F,"otherInvestmentGain",0);add(F,"cipGain",0);add(F,"cipActivity",0);add(F,"equityMethodEarnings",0);add(F,"equityMethodDistribution",0);
+  add(F,"arChange",B.ar[p]-B.ar[n]);add(F,"investmentTrading",0);add(F,"otherAssetChange",B.otherAssets[p]-B.otherAssets[n]);add(F,"accruedCompChange",B.accruedComp[n]-B.accruedComp[p]);add(F,"apChange",B.ap[n]-B.ap[p]);add(F,"otherLiabChange",B.otherLiabs[n]-B.otherLiabs[p]);
+  const wc=sum([F.arChange[n],F.investmentTrading[n],F.otherAssetChange[n],F.accruedCompChange[n],F.apChange[n],F.otherLiabChange[n]]);
+  add(F,"cfo",F.netIncome[n]+F.da[n]+F.impairment[n]+F.leaseExpense[n]+F.sbc[n]+F.deferredTax[n]+F.charitable[n]+F.contingentFV[n]+F.otherInvestmentGain[n]+F.cipGain[n]+F.cipActivity[n]+F.equityMethodEarnings[n]+F.equityMethodDistribution[n]+wc);
+  add(F,"investmentPurchases",-rev*a.investmentPurchaseRatio);add(F,"investmentSaleProceeds",B.investments[p]*a.investmentSaleRatio);add(F,"equityCapitalDistribution",0);add(F,"fundConsolidations",0);add(F,"acquisitions",0);add(F,"capex",capex);
+  add(F,"cfi",sum([F.investmentPurchases[n],F.investmentSaleProceeds[n],F.equityCapitalDistribution[n],F.fundConsolidations[n],F.acquisitions[n],F.capex[n]]));
+  add(F,"debtRepayment",-a.debtRepayment);add(F,"debtIssuance",a.debtIssuance);add(F,"dividends",-I.parentIncome[n]*a.dividendPayout);add(F,"optionProceeds",a.optionProceeds);add(F,"shareRepurchases",-rev*a.buybackRatio);add(F,"cipBorrowing",0);add(F,"nciCashFlow",-I.nciCips[n]-I.nciSubco[n]);add(F,"otherFinancing",0);add(F,"cff",sum([F.debtRepayment[n],F.debtIssuance[n],F.dividends[n],F.optionProceeds[n],F.shareRepurchases[n],F.cipBorrowing[n],F.nciCashFlow[n],F.otherFinancing[n]]));add(F,"fx",0);add(F,"netCashChange",F.cfo[n]+F.cfi[n]+F.cff[n]+F.fx[n]);add(F,"beginningCash",F.endingCash[p]);add(F,"endingCash",F.beginningCash[n]+F.netCashChange[n]);add(F,"restrictedCash",a.restrictedCash);
+  add(B,"cash",F.endingCash[n]-F.restrictedCash[n]);B.investments[n]=B.investments[p]-F.investmentPurchases[n]-F.investmentSaleProceeds[n];
+  add(B,"parentEquity",B.parentEquity[p]+I.parentIncome[n]+F.sbc[n]+F.optionProceeds[n]+F.dividends[n]+F.shareRepurchases[n]);add(B,"nciPermanent",B.nciPermanent[p]);
+  add(B,"totalAssets",sum([B.cash[n],B.ar[n],B.investments[n],B.separateAssets[n],B.collateralAssets[n],B.ppe[n],B.intangibles[n],B.goodwill[n],B.rouAssets[n],B.otherAssets[n]]));
+  add(B,"totalLiabs",sum([B.accruedComp[n],B.ap[n],B.debt[n],B.separateLiabs[n],B.collateralLiabs[n],B.contingentLiabs[n],B.deferredTaxLiabs[n],B.leaseLiabs[n],B.otherLiabs[n]]));add(B,"totalTempEquity",B.nciCipsTemp[n]+B.nciSubcoTemp[n]);add(B,"totalPermanentEquity",B.parentEquity[n]+B.nciPermanent[n]);add(B,"totalEquity",B.totalTempEquity[n]+B.totalPermanentEquity[n]);add(B,"balanceCheck",Math.round((B.totalAssets[n]-B.totalLiabs[n]-B.totalEquity[n])*100)/100);
+  add(F,"cashCheck",Math.round((F.endingCash[n]-B.cash[n]-F.restrictedCash[n])*100)/100);add(F,"cfoFiledCheck",null);add(F,"cfiFiledCheck",null);add(F,"cffFiledCheck",null);add(F,"nciCheck",Math.round((I.netIncome[n]-I.nciCips[n]-I.nciSubco[n]-I.parentIncome[n])*100)/100);add(F,"equityCheck",Math.round((B.parentEquity[n]-B.parentEquity[p]-I.parentIncome[n]-F.sbc[n]-F.optionProceeds[n]-F.dividends[n]-F.shareRepurchases[n])*100)/100);add(F,"tempCheck",Math.round((B.totalTempEquity[n]-B.totalTempEquity[p]-I.nciCips[n]-I.nciSubco[n]-F.nciCashFlow[n])*100)/100);
+ }
+ return m;
+}
+const amountFmt=new Intl.NumberFormat("en-US",{minimumFractionDigits:1,maximumFractionDigits:1});
+function fmt(v,type){if(v===null||v===undefined||!Number.isFinite(v))return "—";if(type==="eps")return "$"+v.toFixed(2);if(type==="shares")return v.toFixed(1);if(type==="pct")return (v*100).toFixed(1)+"%";if(Math.abs(v)<.00001)return "—";const n=amountFmt.format(Math.abs(v));return v<0?"($" + n + ")":"$"+n}
+const sections={
+ income:{title:"Income statement",note:"USD mm, except diluted shares and EPS",modelKey:"is",rows:[
+ {section:"Revenue"},
+ {label:"Investment advisory and administration fees",key:"advisory",indent:true},{label:"Securities lending revenue",key:"securities",indent:true},{label:"Total advisory, administration and securities lending",key:"advisorySecurities",bold:true},{label:"Investment advisory performance fees",key:"performance",indent:true},{label:"Technology services and subscription revenue",key:"technology",indent:true},{label:"Distribution fees",key:"distribution",indent:true},{label:"Advisory and other revenue",key:"other",indent:true},{label:"Total revenue",key:"totalRevenue",bold:true},
+ {section:"Operating expenses"},{label:"Employee compensation and benefits",key:"employee",indent:true},{label:"Distribution and servicing costs",key:"distServicing",indent:true},{label:"Direct fund expense",key:"directFund",indent:true},{label:"Sub-advisory and other",key:"subadvisory",indent:true},{label:"Total sales, asset and account expense",key:"salesExpense",bold:true},{label:"General and administration expense",key:"ga",indent:true},{label:"Change in fair value of contingent consideration",key:"contingentExpense",indent:true},{label:"Restructuring charge",key:"restructuring",indent:true},{label:"Amortization and impairment of intangible assets",key:"amortization",indent:true},{label:"Total expense",key:"totalExpense",bold:true},{label:"Operating income",key:"operatingIncome",bold:true},
+ {section:"Nonoperating income and earnings"},{label:"Net gain (loss) on investments",key:"investmentGain",indent:true},{label:"Interest and dividend income",key:"interestIncome",indent:true},{label:"Interest expense",key:"interestExpense",indent:true},{label:"Total nonoperating income (expense)",key:"nonOperating",bold:true},{label:"Income before income taxes",key:"pretax",bold:true},{label:"Income tax expense",key:"tax",indent:true},{label:"Net income",key:"netIncome",bold:true},{label:"Net income attributable to NCI - CIPs",key:"nciCips",indent:true},{label:"Net income attributable to NCI - Subco",key:"nciSubco",indent:true},{label:"Net income attributable to BlackRock, Inc.",key:"parentIncome",bold:true},{label:"Operating margin",key:"operatingMargin",type:"pct"},{label:"Diluted weighted-average shares (millions)",key:"dilutedShares",type:"shares"},{label:"Diluted earnings per share",key:"eps",type:"eps",bold:true}
+ ]},
+ balance:{title:"Balance sheet",note:"USD mm, year-end balances",modelKey:"bs",rows:[
+ {section:"Assets"},{label:"Cash and cash equivalents",key:"cash",indent:true},{label:"Accounts receivable",key:"ar",indent:true},{label:"Investments",key:"investments",indent:true},{label:"Separate account assets",key:"separateAssets",indent:true},{label:"Separate account collateral held",key:"collateralAssets",indent:true},{label:"Property and equipment, net",key:"ppe",indent:true},{label:"Intangible assets, net",key:"intangibles",indent:true},{label:"Goodwill",key:"goodwill",indent:true},{label:"Operating lease right-of-use assets",key:"rouAssets",indent:true},{label:"Other assets",key:"otherAssets",indent:true},{label:"Total assets",key:"totalAssets",bold:true},
+ {section:"Liabilities"},{label:"Accrued compensation and benefits",key:"accruedComp",indent:true},{label:"Accounts payable and accrued liabilities",key:"ap",indent:true},{label:"Borrowings",key:"debt",indent:true},{label:"Separate account liabilities",key:"separateLiabs",indent:true},{label:"Securities-lending collateral liabilities",key:"collateralLiabs",indent:true},{label:"Contingent consideration liabilities",key:"contingentLiabs",indent:true},{label:"Deferred income tax liabilities",key:"deferredTaxLiabs",indent:true},{label:"Operating lease liabilities",key:"leaseLiabs",indent:true},{label:"Other liabilities",key:"otherLiabs",indent:true},{label:"Total liabilities",key:"totalLiabs",bold:true},
+ {section:"Temporary equity"},{label:"Redeemable NCI - CIPs",key:"nciCipsTemp",indent:true},{label:"Redeemable NCI - Subco",key:"nciSubcoTemp",indent:true},{label:"Total temporary equity",key:"totalTempEquity",bold:true},
+ {section:"Permanent equity"},{label:"BlackRock, Inc. stockholders' equity",key:"parentEquity",indent:true},{label:"Nonredeemable NCI - CIPs",key:"nciPermanent",indent:true},{label:"Total permanent equity",key:"totalPermanentEquity",bold:true},{label:"Total liabilities, temporary equity and permanent equity",key:"totalEquity",bold:true},{label:"Balance sheet check",key:"balanceCheck",check:true}
+ ]},
+ cash:{title:"Cash flow statement",note:"USD mm, annual cash flows; ending cash includes restricted cash",modelKey:"cf",rows:[
+ {section:"Operating activities"},{label:"Net income",key:"netIncome",indent:true},{label:"Depreciation and amortization",key:"da",indent:true},{label:"Intangible impairment",key:"impairment",indent:true},{label:"Noncash lease expense",key:"leaseExpense",indent:true},{label:"Stock-based compensation",key:"sbc",indent:true},{label:"Deferred income tax expense (benefit)",key:"deferredTax",indent:true},{label:"Charitable contribution",key:"charitable",indent:true},{label:"Change in fair value of contingent consideration",key:"contingentFV",indent:true},{label:"Other investment gains adjustment",key:"otherInvestmentGain",indent:true},{label:"Net gains / losses within CIPs",key:"cipGain",indent:true},{label:"Net purchases / proceeds within CIPs",key:"cipActivity",indent:true},{label:"(Earnings) losses from equity-method investees",key:"equityMethodEarnings",indent:true},{label:"Distributions of equity-method earnings",key:"equityMethodDistribution",indent:true},{label:"Accounts receivable",key:"arChange",indent:true},{label:"Investments, trading",key:"investmentTrading",indent:true},{label:"Other assets",key:"otherAssetChange",indent:true},{label:"Accrued compensation and benefits",key:"accruedCompChange",indent:true},{label:"Accounts payable and accrued liabilities",key:"apChange",indent:true},{label:"Other liabilities",key:"otherLiabChange",indent:true},{label:"Net cash provided by operating activities",key:"cfo",bold:true},
+ {section:"Investing activities"},{label:"Purchases of investments",key:"investmentPurchases",indent:true},{label:"Proceeds from sales and maturities of investments",key:"investmentSaleProceeds",indent:true},{label:"Distributions of capital from equity-method investees",key:"equityCapitalDistribution",indent:true},{label:"Net consolidations / deconsolidations of sponsored funds",key:"fundConsolidations",indent:true},{label:"Acquisitions, net of cash acquired",key:"acquisitions",indent:true},{label:"Purchases of property and equipment",key:"capex",indent:true},{label:"Net cash provided by / (used in) investing activities",key:"cfi",bold:true},
+ {section:"Financing activities"},{label:"Repayments of long-term borrowings",key:"debtRepayment",indent:true},{label:"Proceeds from long-term borrowings",key:"debtIssuance",indent:true},{label:"Dividends and Subco distributions paid",key:"dividends",indent:true},{label:"Proceeds from stock options exercised",key:"optionProceeds",indent:true},{label:"Shares / Subco Units repurchased",key:"shareRepurchases",indent:true},{label:"CIP net borrowings",key:"cipBorrowing",indent:true},{label:"NCI subscriptions / (redemptions and distributions)",key:"nciCashFlow",indent:true},{label:"Other financing activities",key:"otherFinancing",indent:true},{label:"Net cash provided by / (used in) financing activities",key:"cff",bold:true},
+ {label:"Effect of exchange rate changes on cash",key:"fx",indent:true},{label:"Net increase / (decrease) in cash",key:"netCashChange",bold:true},{label:"Cash, cash equivalents and restricted cash, beginning",key:"beginningCash"},{label:"Cash, cash equivalents and restricted cash, ending",key:"endingCash",bold:true},{label:"Restricted cash included in other assets",key:"restrictedCash"},{label:"Cash flow to balance sheet cash check",key:"cashCheck",check:true}
+ ]}
+};
+let activeStatement="income";
+function renderStatement(model){
+ const def=sections[activeStatement],body=[];
+ document.getElementById("statementTitle").textContent=def.title;
+ document.getElementById("statementNote").textContent=def.note;
+ let html='<table class="statement-table"><thead><tr><th>Line item</th>';
+ for(const y of YEARS)html+='<th>'+y+'</th>';
+ html+='</tr></thead><tbody>';
+ for(const row of def.rows){
+  if(row.section){html+='<tr class="section-row"><td colspan="9">'+row.section+'</td></tr>';continue}
+  const cls=(row.bold?"total-row ":"")+(row.check?"check-row":"");
+  html+='<tr class="'+cls+'"><td class="'+(row.indent?"indent":"")+'">'+row.label+'</td>';
+  const values=model[def.modelKey][row.key]||[];
+  for(let i=0;i<YEARS.length;i++)html+='<td>'+fmt(values[i],row.type||"amount")+'</td>';
+  html+='</tr>';
+ }
+ html+='</tbody></table>';document.getElementById("statementTable").innerHTML=html;
+}
+function makeAssumptions(){
+ let html="";
+ for(const group of groups){
+  html+='<article class="panel assumption-card"><h3>'+group.title+'</h3><p>'+group.note+'</p><div class="field-grid">';
+  for(const f of group.fields){
+   const key=f[0],isPct=f[2]==="%";
+   html+='<label class="field"><span>'+f[1]+'</span><div class="field-control"><input type="number" data-key="'+key+'" data-scale="'+(isPct?"100":"1")+'" step="'+(isPct?"0.1":"1")+'"><em>'+(isPct?"%":"USD mm")+'</em></div></label>';
+  }
+  html+='</div></article>';
+ }
+ document.getElementById("assumptionGrid").innerHTML=html;
+}
+function addKpi(label,value,foot){return '<article class="card kpi"><div class="kpi-label">'+label+'</div><div class="kpi-value">'+value+'</div><div class="kpi-foot">'+foot+'</div></article>'}
+function drawChart(m){
+ const w=760,h=260,left=55,right=16,top=15,bottom=35;
+ const series=[{key:"totalRevenue",name:"Revenue",color:"#16836f"},{key:"operatingIncome",name:"Operating income",color:"#2b5e91"},{key:"parentIncome",name:"Net income to BlackRock",color:"#df9a3e"}];
+ const all=[];for(const s of series)for(const v of m.is[s.key])all.push(v);
+ const max=Math.max.apply(null,all)*1.1,plotW=w-left-right,plotH=h-top-bottom;
+ let svg='<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Revenue and earnings trend">';
+ for(let j=0;j<=4;j++){
+  const val=max*j/4,y=top+plotH-(plotH*j/4);
+  svg+='<line x1="'+left+'" y1="'+y+'" x2="'+(w-right)+'" y2="'+y+'" stroke="#e4ebf0" stroke-width="1"/>';
+  svg+='<text x="'+(left-8)+'" y="'+(y+4)+'" text-anchor="end" fill="#718091" font-size="10">$'+Math.round(val/1000)+'bn</text>';
+ }
+ for(let i=0;i<YEARS.length;i++){
+  const x=left+plotW*i/(YEARS.length-1);
+  svg+='<text x="'+x+'" y="'+(h-10)+'" text-anchor="middle" fill="#718091" font-size="10">'+YEARS[i]+'</text>';
+ }
+ for(const s of series){
+  const pts=m.is[s.key].map((v,i)=>{
+   const x=left+plotW*i/(YEARS.length-1),y=top+plotH-(v/max*plotH);return x.toFixed(1)+","+y.toFixed(1)
+  }).join(" ");
+  svg+='<polyline fill="none" stroke="'+s.color+'" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" points="'+pts+'"/>';
+  m.is[s.key].forEach((v,i)=>{const x=left+plotW*i/(YEARS.length-1),y=top+plotH-(v/max*plotH);svg+='<circle cx="'+x+'" cy="'+y+'" r="3.4" fill="'+s.color+'"/>'});
+ }
+ svg+='</svg>';document.getElementById("trendChart").innerHTML=svg;
+ document.getElementById("chartLegend").innerHTML=series.map(s=>'<span><i style="background:'+s.color+'"></i>'+s.name+'</span>').join("");
+}
+function renderDashboard(m){
+ const rev=m.is.totalRevenue,op=m.is.operatingIncome,ni=m.is.parentIncome,eps=m.is.eps;
+ const cagr=Math.pow(rev[7]/rev[2],1/5)-1;
+ document.getElementById("kpis").innerHTML=
+  addKpi("FY2025 revenue",fmt(rev[2]),"Audited actual")+
+  addKpi("FY2030 revenue",fmt(rev[7]),"Illustrative forecast")+
+  addKpi("Revenue CAGR",fmt(cagr,"pct"),"2025A–2030E")+
+  addKpi("FY2030 operating margin",fmt(op[7]/rev[7],"pct"),"Operating income / revenue")+
+  addKpi("FY2030 diluted EPS",fmt(eps[7],"eps"),"Parent earnings plus Subco")+
+  addKpi("FY2030 ending cash",fmt(m.bs.cash[7]),"After debt, dividends and buybacks");
+ drawChart(m);
+ const rows=[["Revenue",rev[2],rev[7]],["Operating income",op[2],op[7]],["Operating margin",op[2]/rev[2],op[7]/rev[7],"pct"],["Parent net income",ni[2],ni[7]],["Diluted EPS",eps[2],eps[7],"eps"],["Cash and cash equivalents",m.bs.cash[2],m.bs.cash[7]],["Borrowings",m.bs.debt[2],m.bs.debt[7]]];
+ let table='<table class="snapshot"><thead><tr><th>Metric</th><th>2025A</th><th>2030E</th></tr></thead><tbody>';
+ rows.forEach((r,i)=>{const type=r[3]||"amount";table+='<tr class="'+([0,3,4].includes(i)?"highlight":"")+'"><td>'+r[0]+'</td><td>'+fmt(r[1],type)+'</td><td>'+fmt(r[2],type)+'</td></tr>'});
+ table+='</tbody></table>';document.getElementById("snapshot").innerHTML=table;
+ const checks=collectChecks(m),ok=checks.every(x=>Math.abs(x.value)<.01);
+ const banner=document.getElementById("statusBanner");banner.className="check-banner"+(ok?"":" fail");banner.innerHTML='<span>'+ (ok?"All model checks pass":"Review model checks")+'</span><small>'+checks.length+' reconciliations · '+(ok?"0.00 difference":"one or more differences")+'</small>';
+}
+function collectChecks(m){
+ const out=[];
+ for(let i=0;i<8;i++){
+  out.push({name:"Balance sheet",value:m.bs.balanceCheck[i]});
+  out.push({name:"Cash flow to balance sheet cash",value:m.cf.cashCheck[i]});
+  out.push({name:"Net income attribution",value:m.cf.nciCheck[i]});
+  if(i<3){out.push({name:"Cash flow to filed operating cash flow",value:m.cf.cfoFiledCheck[i]});out.push({name:"Cash flow to filed investing cash flow",value:m.cf.cfiFiledCheck[i]});out.push({name:"Cash flow to filed financing cash flow",value:m.cf.cffFiledCheck[i]})}
+  else{out.push({name:"Parent equity roll-forward",value:m.cf.equityCheck[i]});out.push({name:"Temporary NCI roll-forward",value:m.cf.tempCheck[i]})}
+ }
+ return out;
+}
+function renderChecks(m){
+ const all=collectChecks(m),forecast=all.filter(x=>!x.name.includes("filed")),summary=[
+  ["Balance sheet equation",Math.max.apply(null,m.bs.balanceCheck.map(Math.abs))],
+  ["Ending cash tie",Math.max.apply(null,m.cf.cashCheck.map(Math.abs))],
+  ["Net income attribution",Math.max.apply(null,m.cf.nciCheck.map(Math.abs))],
+  ["Parent equity roll-forward",Math.max.apply(null,m.cf.equityCheck.slice(3).map(Math.abs))],
+  ["Temporary NCI roll-forward",Math.max.apply(null,m.cf.tempCheck.slice(3).map(Math.abs))],
+  ["Historical cash flow vs filing",Math.max.apply(null,m.cf.cfoFiledCheck.concat(m.cf.cfiFiledCheck,m.cf.cffFiledCheck).map(Math.abs))]
+ ];
+ document.getElementById("checksGrid").innerHTML=summary.map(x=>'<div class="check-item"><div class="check-name">'+x[0]+'</div><div class="check-value'+(x[1]<.01?"":" fail")+'">'+(x[1]<.01?"PASS":"FAIL")+'</div></div>').join("");
+}
+function updateInputs(){
+ document.querySelectorAll("[data-key]").forEach(el=>{const scale=Number(el.dataset.scale||1);el.value=(assumptions[el.dataset.key]*scale).toFixed(scale===100?1:1)});
+}
+function renderAll(){
+ const m=runModel(assumptions);renderDashboard(m);renderChecks(m);renderStatement(m);updateInputs();
+}
+makeAssumptions();
+document.querySelectorAll(".tab-btn").forEach(btn=>btn.addEventListener("click",()=>{document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));btn.classList.add("active");document.getElementById("view-"+btn.dataset.view).classList.add("active");if(btn.dataset.view==="statements")renderStatement(runModel(assumptions))}));
+document.querySelectorAll(".sub-btn").forEach(btn=>btn.addEventListener("click",()=>{document.querySelectorAll(".sub-btn").forEach(b=>b.classList.remove("active"));btn.classList.add("active");activeStatement=btn.dataset.statement;renderStatement(runModel(assumptions))}));
+document.getElementById("assumptionGrid").addEventListener("change",e=>{const el=e.target.closest("[data-key]");if(!el)return;const value=Number(el.value),scale=Number(el.dataset.scale||1);if(Number.isFinite(value)){assumptions[el.dataset.key]=value/scale;renderAll()}});
+document.getElementById("resetBtn").addEventListener("click",()=>{assumptions=Object.assign({},BASE);renderAll()});
+document.getElementById("sourceShortcut").addEventListener("click",()=>{document.querySelector('[data-view="sources"]').click()});
+renderAll();
+</script>
+</body>
+</html>
